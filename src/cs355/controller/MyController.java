@@ -346,6 +346,9 @@ public class MyController implements CS355Controller{
                     }
                 }else{
                     whatSelected = myMod.getShape(selectedIndex).rotationHit();
+                    if (whatSelected.name().equals(SelectPoint.Center)) {
+                        startPress.setLocation(e.getX(), e.getY());
+                    }
                     if(whatSelected.name().equals(SelectPoint.None.name())){
                         for(int i = 0; i < myMod.getSize(); i++){
                             if(myMod.getShape(i).pointInShape(new Point2D.Double(e.getX(), e.getY()), 4)){
@@ -554,7 +557,9 @@ public class MyController implements CS355Controller{
                     case LinePoint:
 
                         break;
-                    case LineCenter:
+                    case Center:
+                        double xOff = startPress.getX() - e.getX();
+                        double yOff = startPress.getY() - e.getY();
                         break;
                 }
                 break;
