@@ -37,7 +37,7 @@ public class SceneParser {
 	 * and parse .obj files, which are how we
 	 * store models.
 	 * @return the newly created scene.
-	 * @throws Exception when the file is invalid.
+	 * @throws java.lang.Exception when the file is invalid.
 	 */
 	public CS355Scene parse() throws Exception {
 
