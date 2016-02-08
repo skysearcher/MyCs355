@@ -150,8 +150,8 @@ class CS355Frame extends javax.swing.JFrame implements KeyListener, MouseListene
         selectBtn = new javax.swing.JButton();
         zoomInBtn = new javax.swing.JButton();
         zoomOutBtn = new javax.swing.JButton();
-        vertScrollBar = new JScrollBar();
-        horScrollBar = new JScrollBar();
+        vertScrollBar = new javax.swing.JScrollBar();
+        horScrollBar = new javax.swing.JScrollBar();
         colorCanvas = new java.awt.Canvas();
         colorCanvas = new CS355SmallCanvas();
         houseBtn = new javax.swing.JButton();
@@ -194,7 +194,7 @@ class CS355Frame extends javax.swing.JFrame implements KeyListener, MouseListene
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(664, 648));
 
-        canvas.setBackground(new Color(0, 0, 0));
+        canvas.setBackground(new java.awt.Color(0, 0, 0));
         canvas.setMaximumSize(new java.awt.Dimension(512, 512));
         canvas.setMinimumSize(new java.awt.Dimension(512, 512));
         canvas.setSize(new java.awt.Dimension(512, 512));
@@ -278,7 +278,7 @@ class CS355Frame extends javax.swing.JFrame implements KeyListener, MouseListene
         });
 
         horScrollBar.setMaximum(2047);
-        horScrollBar.setOrientation(JScrollBar.HORIZONTAL);
+        horScrollBar.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
         horScrollBar.setVisibleAmount(2047);
         horScrollBar.addAdjustmentListener(new java.awt.event.AdjustmentListener() {
             public void adjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {
@@ -1105,7 +1105,7 @@ class CS355Frame extends javax.swing.JFrame implements KeyListener, MouseListene
     private javax.swing.JPopupMenu.Separator fileSeparator3;
     private javax.swing.JPopupMenu.Separator fileSeparator4;
     private javax.swing.JMenuItem grayscaleItem;
-    private JScrollBar horScrollBar;
+    private javax.swing.JScrollBar horScrollBar;
     private javax.swing.JButton houseBtn;
     private javax.swing.JButton imageBtn;
     private javax.swing.JMenu imageMenu;
@@ -1131,7 +1131,7 @@ class CS355Frame extends javax.swing.JFrame implements KeyListener, MouseListene
     private javax.swing.JMenuItem sharpenItem;
     private javax.swing.JButton squareBtn;
     private javax.swing.JButton triangleBtn;
-    private JScrollBar vertScrollBar;
+    private javax.swing.JScrollBar vertScrollBar;
     private javax.swing.JButton zoomInBtn;
     private javax.swing.JLabel zoomLbl;
     private javax.swing.JButton zoomOutBtn;
