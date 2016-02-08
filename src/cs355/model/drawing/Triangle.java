@@ -1,5 +1,6 @@
 package cs355.model.drawing;
 
+import cs355.controller.SelectPoint;
 import cs355.controller.TShapeEnum;
 
 import java.awt.*;
@@ -113,8 +114,8 @@ public class Triangle extends Shape {
 	}
 
 	@Override
-	public int rotationHit() {
-		return 0;
+	public SelectPoint rotationHit() {
+		return SelectPoint.None;
 	}
 
 }

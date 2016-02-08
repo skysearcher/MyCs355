@@ -34,7 +34,10 @@ public class MyController implements CS355Controller{
     private Point2D.Double one;
     private Point2D.Double two;
     private Point2D.Double three;
+    private Point2D.Double rotationStart;
     private int selectedIndex;
+    private int selectPoint;
+    private SelectPoint whatSelected;
 
 
     public MyController(MyModel givenModel, MyViewRefresh theView){
@@ -43,11 +46,14 @@ public class MyController implements CS355Controller{
         drawShape = TShapeEnum.NONE;
         triangleClick = 0;
         drawColor = Color.white;
-        startPress = new Point2D.Double(0.0, 0.0);
-        squareLeft = new Point2D.Double(0.0, 0.0);
+        startPress = new Point2D.Double(0, 0);
+        squareLeft = new Point2D.Double(0, 0);
+        rotationStart = new Point2D.Double(0,0);
         circConvert = new SquareCircle();
         ellipseConvert = new RectangleEllipse();
         selectedIndex = -1;
+        selectPoint = -1;
+        whatSelected = SelectPoint.None;
     }
     @Override
     public void colorButtonHit(Color c) {
@@ -66,6 +72,7 @@ public class MyController implements CS355Controller{
     public void lineButtonHit() {
         drawShape = TShapeEnum.LINE;
         selectedIndex = -1;
+        whatSelected = SelectPoint.None;
         myView.setSelected(selectedIndex);
         myMod.notifyChanged();
         GUIFunctions.refresh();
@@ -75,6 +82,7 @@ public class MyController implements CS355Controller{
     public void squareButtonHit() {
         drawShape = TShapeEnum.SQUARE;
         selectedIndex = -1;
+        whatSelected = SelectPoint.None;
         myView.setSelected(selectedIndex);
         myMod.notifyChanged();
         GUIFunctions.refresh();
@@ -84,6 +92,7 @@ public class MyController implements CS355Controller{
     public void rectangleButtonHit() {
         drawShape = TShapeEnum.RECTANGLE;
         selectedIndex = -1;
+        whatSelected = SelectPoint.None;
         myView.setSelected(selectedIndex);
         myMod.notifyChanged();
         GUIFunctions.refresh();
@@ -93,6 +102,7 @@ public class MyController implements CS355Controller{
     public void circleButtonHit() {
         drawShape = TShapeEnum.CIRCLE;
         selectedIndex = -1;
+        whatSelected = SelectPoint.None;
         myView.setSelected(selectedIndex);
         myMod.notifyChanged();
         GUIFunctions.refresh();
@@ -102,6 +112,7 @@ public class MyController implements CS355Controller{
     public void ellipseButtonHit() {
         drawShape = TShapeEnum.ELLIPSE;
         selectedIndex = -1;
+        whatSelected = SelectPoint.None;
         myView.setSelected(selectedIndex);
         myMod.notifyChanged();
         GUIFunctions.refresh();
@@ -112,6 +123,7 @@ public class MyController implements CS355Controller{
         triangleClick = 0;
         drawShape = TShapeEnum.TRIANGLE;
         selectedIndex = -1;
+        whatSelected = SelectPoint.None;
         myView.setSelected(selectedIndex);
         myMod.notifyChanged();
         GUIFunctions.refresh();
@@ -121,6 +133,7 @@ public class MyController implements CS355Controller{
     public void selectButtonHit() {
         drawShape = TShapeEnum.SELECT;
         selectedIndex = -1;
+        whatSelected = SelectPoint.None;
         myView.setSelected(selectedIndex);
         myMod.notifyChanged();
         GUIFunctions.refresh();
@@ -323,11 +336,24 @@ public class MyController implements CS355Controller{
                 }
                 break;
             case SELECT:
-                for(int i = 0; i < myMod.getSize(); i++){
-                    if(myMod.getShape(i).pointInShape(new Point2D.Double(e.getX(), e.getY()), 4)){
-                        selectedIndex = i;
-                        myView.setSelected(selectedIndex);
-                        i = myMod.getSize();
+                if(selectedIndex == -1){
+                    for(int i = 0; i < myMod.getSize(); i++){
+                        if(myMod.getShape(i).pointInShape(new Point2D.Double(e.getX(), e.getY()), 4)){
+                            selectedIndex = i;
+                            myView.setSelected(selectedIndex);
+                            i = myMod.getSize();
+                        }
+                    }
+                }else{
+                    whatSelected = myMod.getShape(selectedIndex).rotationHit();
+                    if(whatSelected.name().equals(SelectPoint.None.name())){
+                        for(int i = 0; i < myMod.getSize(); i++){
+                            if(myMod.getShape(i).pointInShape(new Point2D.Double(e.getX(), e.getY()), 4)){
+                                selectedIndex = i;
+                                myView.setSelected(selectedIndex);
+                                i = myMod.getSize();
+                            }
+                        }
                     }
                 }
                 break;
@@ -518,6 +544,19 @@ public class MyController implements CS355Controller{
                 myView.setDrawing(ellipseConvert.makeEllipse((Rectangle) myShape));
                 break;
             case TRIANGLE:
+                break;
+            case SELECT:
+                switch (whatSelected){
+                    case None:
+                        return;
+                    case Rotation:
+                        break;
+                    case LinePoint:
+
+                        break;
+                    case LineCenter:
+                        break;
+                }
                 break;
             case NONE:
                 myView.endDrawing();

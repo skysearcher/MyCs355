@@ -1,5 +1,6 @@
 package cs355.model.drawing;
 
+import cs355.controller.SelectPoint;
 import cs355.controller.TShapeEnum;
 
 import java.awt.Color;
@@ -99,5 +100,5 @@ public abstract class Shape {
 
     public abstract TShapeEnum whatShape();
 
-    public abstract int rotationHit();
+    public abstract SelectPoint rotationHit();
 }

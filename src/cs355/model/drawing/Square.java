@@ -1,5 +1,6 @@
 package cs355.model.drawing;
 
+import cs355.controller.SelectPoint;
 import cs355.controller.TShapeEnum;
 
 import java.awt.Color;
@@ -73,8 +74,8 @@ public class Square extends Shape {
 	}
 
 	@Override
-	public int rotationHit() {
-		return 0;
+	public SelectPoint rotationHit() {
+		return SelectPoint.None;
 	}
 
 }
