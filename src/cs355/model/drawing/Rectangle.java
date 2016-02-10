@@ -85,10 +85,10 @@ public class Rectangle extends Shape {
     @Override
     public boolean pointInShape(Point2D.Double pt, double tolerance) {
         AffineTransform worldToObj = new AffineTransform();
-        worldToObj.rotate(this.getRotation());
+        worldToObj.rotate(-this.getRotation());
         worldToObj.translate(-this.getCenter().getX(), -this.getCenter().getY());
-
         worldToObj.transform(pt, pt);
+
         double maxX = width / 2;
         double maxY = height / 2;
         double minX = -(width / 2);

@@ -323,10 +323,10 @@ public class MyController implements CS355Controller{
                         break;
                     case 2:
                         three = new Point2D.Double(e.getX(), e.getY());
-                        Point2D.Double center = new Point2D.Double((one.getX() + two.getX() + three.getX())/2, (one.getY() + two.getY() + three.getY())/2 );
-                        one.setLocation(center.getX() - one.getX(), center.getY() - one.getY());
-                        two.setLocation(center.getX() - two.getX(), center.getY() - two.getY());
-                        three.setLocation(center.getX() - three.getX(), center.getY() - three.getY());
+                        Point2D.Double center = new Point2D.Double((one.getX() + two.getX() + three.getX())/3, (one.getY() + two.getY() + three.getY())/3 );
+                        one.setLocation(one.getX() - center.getX(), one.getY() - center.getY());
+                        two.setLocation(two.getX() - center.getX(), two.getY() - center.getY());
+                        three.setLocation(three.getX() - center.getX(), three.getY() - center.getY());
                         myMod.addShape(new Triangle(drawColor, center, one, two, three));
                         GUIFunctions.refresh();
                         break;
@@ -342,18 +342,31 @@ public class MyController implements CS355Controller{
                         if(myMod.getShape(i).pointInShape(new Point2D.Double(e.getX(), e.getY()), 4)){
                             selectedIndex = i;
                             myView.setSelected(selectedIndex);
+                            GUIFunctions.changeSelectedColor(myMod.getShape(selectedIndex).getColor());
+                            GUIFunctions.refresh();
                             i = myMod.getSize();
                         }
-                    }
-                    whatSelected = myMod.getShape(selectedIndex).rotationHit(new Point2D.Double(e.getX(), e.getY()), 4);
-                    if (whatSelected.name().equals(SelectPoint.Center.name())) {
-                        startPress.setLocation(e.getX(), e.getY());
+                    }if(selectedIndex != -1){
+                        whatSelected = myMod.getShape(selectedIndex).rotationHit(new Point2D.Double(e.getX(), e.getY()), 4);
+                        if (whatSelected.name().equals(SelectPoint.Center.name())) {
+                            startPress.setLocation(e.getX(), e.getY());
+                        }
                     }
                 }else{
                     whatSelected = myMod.getShape(selectedIndex).rotationHit(new Point2D.Double(e.getX(), e.getY()), 4);
                     switch (whatSelected){
                         case None:
-                            GUIFunctions.printf("Stuff", 0);
+                            for(int i = 0; i < myMod.getSize(); i++){
+                                if(myMod.getShape(i).pointInShape(new Point2D.Double(e.getX(), e.getY()), 4)){
+                                    selectedIndex = i;
+                                    myView.setSelected(selectedIndex);
+                                    GUIFunctions.changeSelectedColor(myMod.getShape(selectedIndex).getColor());
+                                    GUIFunctions.refresh();
+                                    whatSelected = SelectPoint.Center;
+                                    startPress.setLocation(e.getX(), e.getY());
+                                    i = myMod.getSize();
+                                }
+                            }
                             break;
                         case Center:
                             startPress.setLocation(e.getX(), e.getY());
@@ -369,19 +382,6 @@ public class MyController implements CS355Controller{
                             myMod.notifyChanged();
                             GUIFunctions.refresh();
                             break;
-                    }
-
-                    if (whatSelected.name().equals(SelectPoint.Center.name())) {
-                        startPress.setLocation(e.getX(), e.getY());
-                    }
-                    if(whatSelected.name().equals(SelectPoint.None.name())){
-                        for(int i = 0; i < myMod.getSize(); i++){
-                            if(myMod.getShape(i).pointInShape(new Point2D.Double(e.getX(), e.getY()), 4)){
-                                selectedIndex = i;
-                                myView.setSelected(selectedIndex);
-                                i = myMod.getSize();
-                            }
-                        }
                     }
                 }
                 break;

@@ -33,7 +33,6 @@ public class DrawableCircle implements DrawableShape {
     public void drawSelection(Graphics2D g2d) {
         g2d.setTransform(objToWorld);
         g2d.setColor(Color.RED);
-        g2d.drawOval((-5),(int) (-radius - 20) , 10, 10);
         g2d.drawRect((int) (-radius),(int) (-radius) , (int) (radius * 2), (int) (radius * 2));
     }
 

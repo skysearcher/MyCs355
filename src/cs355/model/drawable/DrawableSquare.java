@@ -29,7 +29,6 @@ public class DrawableSquare implements DrawableShape{
         g2d.setTransform(objToWorld);
         g2d.setColor(innerSquare.getColor());
         g2d.fillRect((int)(-width/2),(int)(-height/2), (int)width, (int)height);
-//        drawSelection(g2d);
     }
 
     @Override
