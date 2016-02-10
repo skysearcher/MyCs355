@@ -17,6 +17,9 @@ public class Line extends Shape {
     private double normalOne;
     private double normalTwo;
     private double distance;
+    private double pointDis;
+    private double xValue;
+    private double yValue;
 
     // The ending point of the line.
     private Point2D.Double end;
@@ -68,16 +71,23 @@ public class Line extends Shape {
     @Override
     public boolean pointInShape(Point2D.Double pt, double tolerance) {
         AffineTransform worldToObj = new AffineTransform();
-        worldToObj.rotate(-this.getRotation());
         worldToObj.translate(-this.getCenter().getX(), -this.getCenter().getY());
         worldToObj.transform(pt, pt);
         myTol = tolerance;
         normalize = Math.sqrt(Math.pow(end.getX() - 0, 2.0) + Math.pow(end.getY() - 0, 2.0));
         normalOne = (end.getX() - 0)/normalize;
         normalTwo = -(end.getY() - 0)/normalize; //now number one
-        distance = 0;
+        distance = 0.0;
+
         if ((pt.getX() * normalTwo) + (pt.getY() * normalOne) <= myTol && (pt.getX() * normalTwo) + (pt.getY() * normalOne) >= -myTol) {//within tolerance of line
-            return true;
+            xValue = (normalOne * (pt.getX()));
+            yValue = (-normalTwo * (pt.getY()));
+            pointDis = xValue + yValue;
+            if(pointDis <= normalize + myTol && pointDis >= -myTol){
+                return true;
+            }else{
+                return false;
+            }
         } else {
             return false;
         }
@@ -85,7 +95,23 @@ public class Line extends Shape {
 
     @Override
     public boolean hitHandle(Point2D.Double pt) {
-        return false;
+        return pt.getY() > - 5.0 && pt.getY() < 5.0 && pt.getX() > -5.0 && pt.getX() < 5.0;
+    }
+    public boolean endHit(Point2D.Double pt){
+        return pt.getY() > - 5.0 + end.getY() && pt.getY() < 5.0 + end.getY() && pt.getX() > -5.0 + end.getX() && pt.getX() < 5.0 + end.getX();
+    }
+    public void setAffEnd(Point2D.Double pt){
+        AffineTransform worldToObj = new AffineTransform();
+        worldToObj.translate(-this.getCenter().getX(), -this.getCenter().getY());
+        worldToObj.transform(pt, pt);
+        end = pt;
+    }
+    public void changeCenter(Point2D.Double pt){
+        AffineTransform worldToObj = new AffineTransform();
+        worldToObj.translate(-this.getCenter().getX(), -this.getCenter().getY());
+        worldToObj.transform(pt, pt);
+        end.setLocation(end.getX() - pt.getX(), end.getY() - pt.getY());
+        center.setLocation(center.getX() + pt.getX(), center.getY() + pt.getY());
     }
 
     @Override
@@ -96,13 +122,17 @@ public class Line extends Shape {
     @Override
     public SelectPoint rotationHit(Point2D.Double pt, double tolerance) {
         if (pointInShape(pt, tolerance)) {
+            if(hitHandle(pt)) {
+                return SelectPoint.LinePoint;
+            }
+            if(endHit(pt)){
+                return SelectPoint.LinePointTwo;
+            }
             return SelectPoint.Center;
-        }
-        if(hitHandle(pt)) {
-            return SelectPoint.Rotation;
-        } else {
+        }else{
             return SelectPoint.None;
         }
+
     }
 
 }
