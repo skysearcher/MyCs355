@@ -63,9 +63,8 @@ public class Square extends Shape {
     public boolean pointInShape(Point2D.Double pt, double tolerance) {
 
         AffineTransform worldToObj = new AffineTransform();
-        worldToObj.rotate(this.getRotation());
+//        worldToObj.rotate(this.getRotation());
         worldToObj.translate(-this.getCenter().getX(), -this.getCenter().getY());
-
         worldToObj.transform(pt, pt);
         return size / 2 > pt.getX() && -size / 2 < pt.getX() && size / 2 > pt.getY() && -size / 2 < pt.getY();
     }
