@@ -20,6 +20,7 @@ public class DrawableRectangle implements DrawableShape {
         width = (int)((Rectangle)innerRectangle).getWidth();
         objToWorld = new AffineTransform();
         objToWorld.translate(innerRectangle.getCenter().getX(), innerRectangle.getCenter().getY());
+        objToWorld.rotate(innerRectangle.getRotation());
     }
 
     @Override

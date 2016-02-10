@@ -60,12 +60,17 @@ public class Line extends Shape {
 	}
 
 	@Override
+	public boolean hitHandle(Point2D.Double pt) {
+		return false;
+	}
+
+	@Override
 	public TShapeEnum whatShape() {
 		return TShapeEnum.LINE;
 	}
 
 	@Override
-	public SelectPoint rotationHit() {
+	public SelectPoint rotationHit(Point2D.Double pt, double tolerance) {
 		return SelectPoint.Rotation;
 	}
 

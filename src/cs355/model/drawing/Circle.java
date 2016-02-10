@@ -67,13 +67,25 @@ public class Circle extends Shape {
 	}
 
 	@Override
+	public boolean hitHandle(Point2D.Double pt) {
+		return false;
+	}
+
+	@Override
 	public TShapeEnum whatShape() {
 		return TShapeEnum.CIRCLE;
 	}
 
 	@Override
-	public SelectPoint rotationHit() {
-		return SelectPoint.None;
+	public SelectPoint rotationHit(Point2D.Double pt, double tolerance) {
+		if (pointInShape(pt, tolerance)) {
+			return SelectPoint.Center;
+		}
+		if(hitHandle(pt)) {
+			return SelectPoint.Rotation;
+		} else {
+			return SelectPoint.None;
+		}
 	}
 
 }
