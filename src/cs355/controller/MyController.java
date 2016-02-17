@@ -146,13 +146,18 @@ public class MyController implements CS355Controller{
 
     @Override
     public void zoomInButtonHit() {
+        int thickness;
         if(zoom != 400){
             zoom = zoom * 2;
+            myView.setZoom((double)zoom);
             GUIFunctions.setZoomText(((double)zoom)/100);
             GUIFunctions.printf("Zoom In stuck " + zoom, 0);
         }
-        GUIFunctions.setHScrollBarKnob(400 - zoom + 25);
+        thickness = 400 - zoom + 25;
+        GUIFunctions.setHScrollBarKnob(thickness);
         GUIFunctions.setHScrollBarPosit(horizontalPos);
+        GUIFunctions.setVScrollBarKnob(thickness);
+        GUIFunctions.setVScrollBarKnob(verticalPos);
 
     }
 
@@ -161,13 +166,15 @@ public class MyController implements CS355Controller{
         int thickness;
         if(zoom != 25){
             zoom = zoom / 2;
+            myView.setZoom((double)zoom);
             GUIFunctions.setZoomText(((double)zoom)/100);
             GUIFunctions.printf("Zoom Out stuck " + zoom, 0);
         }
         thickness = 400 - zoom + 25;
         GUIFunctions.setHScrollBarKnob(thickness);
-        horizontalPos = thickness/2;
         GUIFunctions.setHScrollBarPosit(horizontalPos);
+        GUIFunctions.setVScrollBarKnob(thickness);
+        GUIFunctions.setVScrollBarKnob(verticalPos);
     }
 
     @Override

@@ -6,6 +6,7 @@ import cs355.model.drawable.DrawableShape;
 import cs355.model.drawable.ShapeConverter;
 import cs355.model.drawing.Shape;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -22,6 +23,16 @@ public class MyViewRefresh implements ViewRefresher{
     private DrawableShape shapeDrawing;
     private ShapeConverter shaper;
     private int selectedShape;
+
+    public double getZoom() {
+        return zoom;
+    }
+
+    public void setZoom(double zoom) {
+        this.zoom = zoom;
+    }
+
+    private double zoom;
 
 
     public MyViewRefresh(MyModel givenModel){
@@ -47,6 +58,8 @@ public class MyViewRefresh implements ViewRefresher{
     }
     @Override
     public void refreshView(Graphics2D g2d) {
+        AffineTransform zoomTransform = new AffineTransform();
+        g2d.setTransform(zoomTransform);
         start++;
         for(int i = 0; i < drawShapes.size(); i++){
             drawShapes.get(i).onDraw(g2d);
