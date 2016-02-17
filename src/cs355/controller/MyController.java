@@ -251,22 +251,50 @@ public class MyController implements CS355Controller {
 
     @Override
     public void doMoveForward() {
-
+        if(selectedIndex != -1){
+            if(selectedIndex >= 0 && selectedIndex < myMod.getSize() - 1){
+                myMod.moveForward(selectedIndex);
+                selectedIndex++;
+                myView.setSelected(selectedIndex);
+                GUIFunctions.refresh();
+            }
+        }
     }
 
     @Override
     public void doMoveBackward() {
-
+        if(selectedIndex != -1){
+            if(selectedIndex > 0){
+                myMod.moveBackward(selectedIndex);
+                selectedIndex--;
+                myView.setSelected(selectedIndex);
+                GUIFunctions.refresh();
+            }
+        }
     }
 
     @Override
     public void doSendToFront() {
-
+        if(selectedIndex != -1){
+            if(selectedIndex >= 0){
+                myMod.moveToFront(selectedIndex);
+                selectedIndex = myMod.getSize() - 1;
+                myView.setSelected(selectedIndex);
+                GUIFunctions.refresh();
+            }
+        }
     }
 
     @Override
     public void doSendtoBack() {
-
+        if(selectedIndex != -1){
+            if(selectedIndex > 0){
+                myMod.movetoBack(selectedIndex);
+                selectedIndex = 0;
+                myView.setSelected(selectedIndex);
+                GUIFunctions.refresh();
+            }
+        }
     }
 
     @Override

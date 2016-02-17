@@ -4,6 +4,7 @@ import cs355.model.drawing.CS355Drawing;
 import cs355.model.drawing.Shape;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ import java.util.List;
 public class  MyModel extends CS355Drawing {
     private List<Shape> myShapes;
     public MyModel(){
-        myShapes = new ArrayList<>();
+        myShapes = new LinkedList<>();
     }
 
     @Override
@@ -45,17 +46,26 @@ public class  MyModel extends CS355Drawing {
 
     @Override
     public void movetoBack(int index) {
-
+        Shape moveShape = myShapes.remove(index);
+        myShapes.add(0, moveShape);
+        this.setChanged();
+        this.notifyObservers();
     }
 
     @Override
     public void moveForward(int index) {
-
+        Shape moveShape = myShapes.remove(index + 1);
+        myShapes.add(index, moveShape);
+        this.setChanged();
+        this.notifyObservers();
     }
 
     @Override
     public void moveBackward(int index) {
-
+        Shape moveShape = myShapes.remove(index);
+        myShapes.add(index - 1, moveShape);
+        this.setChanged();
+        this.notifyObservers();
     }
 
     @Override
