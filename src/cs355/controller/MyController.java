@@ -18,7 +18,7 @@ import java.util.Iterator;
 /**
  * Created by Joshua on 1/18/2016.
  */
-public class MyController implements CS355Controller {
+public class MyController implements CS355Controller{
     private MyModel myMod;
     private TShapeEnum drawShape;
     private Shape myShape;
@@ -41,7 +41,7 @@ public class MyController implements CS355Controller {
     private double rotation;
 
 
-    public MyController(MyModel givenModel, MyViewRefresh theView) {
+    public MyController(MyModel givenModel, MyViewRefresh theView){
         myView = theView;
         myMod = givenModel;
         drawShape = TShapeEnum.NONE;
@@ -49,21 +49,20 @@ public class MyController implements CS355Controller {
         drawColor = Color.white;
         startPress = new Point2D.Double(0, 0);
         squareLeft = new Point2D.Double(0, 0);
-        rotationStart = new Point2D.Double(0, 0);
+        rotationStart = new Point2D.Double(0,0);
         circConvert = new SquareCircle();
         ellipseConvert = new RectangleEllipse();
         selectedIndex = -1;
         selectPoint = -1;
         whatSelected = SelectPoint.None;
     }
-
     @Override
     public void colorButtonHit(Color c) {
-        if (c != null) {
+        if(c != null){
             drawColor = c;
             GUIFunctions.changeSelectedColor(c);
         }
-        if (selectedIndex != -1) {
+        if(selectedIndex != -1){
             myMod.getShape(selectedIndex).setColor(c);
             myView.setSelected(selectedIndex);
             myMod.notifyChanged();
@@ -205,13 +204,7 @@ public class MyController implements CS355Controller {
 
     @Override
     public void doDeleteShape() {
-        if (selectedIndex != -1) {
-            whatSelected = SelectPoint.None;
-            myView.setSelected(-1);
-            myMod.deleteShape(selectedIndex);
-            selectedIndex = -1;
-            GUIFunctions.refresh();
-        }
+
     }
 
     @Override
@@ -289,12 +282,11 @@ public class MyController implements CS355Controller {
                 break;
         }
     }
-
     @Override
     public void mousePressed(MouseEvent e) {
         switch (drawShape) {
             case LINE:
-                myShape = new Line(drawColor, new Point2D.Double(e.getX(), e.getY()), new Point2D.Double(0, 0));
+                myShape = new Line(drawColor, new Point2D.Double(e.getX(), e.getY()), new Point2D.Double(0,0));
                 myView.setDrawing(myShape);
                 break;
             case SQUARE:
@@ -322,7 +314,7 @@ public class MyController implements CS355Controller {
                 myView.setDrawing(myShape);
                 break;
             case TRIANGLE:
-                switch (triangleClick) {
+                switch (triangleClick){
                     case 0:
                         one = new Point2D.Double(e.getX(), e.getY());
                         break;
@@ -331,7 +323,7 @@ public class MyController implements CS355Controller {
                         break;
                     case 2:
                         three = new Point2D.Double(e.getX(), e.getY());
-                        Point2D.Double center = new Point2D.Double((one.getX() + two.getX() + three.getX()) / 3, (one.getY() + two.getY() + three.getY()) / 3);
+                        Point2D.Double center = new Point2D.Double((one.getX() + two.getX() + three.getX())/3, (one.getY() + two.getY() + three.getY())/3 );
                         one.setLocation(one.getX() - center.getX(), one.getY() - center.getY());
                         two.setLocation(two.getX() - center.getX(), two.getY() - center.getY());
                         three.setLocation(three.getX() - center.getX(), three.getY() - center.getY());
@@ -340,49 +332,53 @@ public class MyController implements CS355Controller {
                         break;
                 }
                 triangleClick++;
-                if (triangleClick >= 3) {
+                if(triangleClick >= 3){
                     triangleClick = 0;
                 }
                 break;
             case SELECT:
-                if (selectedIndex == -1) {
-                    for (int i = 0; i < myMod.getSize(); i++) {
-                        if (myMod.getShape(i).pointInShape(new Point2D.Double(e.getX(), e.getY()), 8)) {
+                if(selectedIndex == -1){
+                    for(int i = 0; i < myMod.getSize(); i++){
+                        if(myMod.getShape(i).pointInShape(new Point2D.Double(e.getX(), e.getY()), 4)){
                             selectedIndex = i;
                             myView.setSelected(selectedIndex);
                             GUIFunctions.changeSelectedColor(myMod.getShape(selectedIndex).getColor());
                             GUIFunctions.refresh();
                             i = myMod.getSize();
                         }
-                    }
-                    if (selectedIndex != -1) {
-                        whatSelected = myMod.getShape(selectedIndex).rotationHit(new Point2D.Double(e.getX(), e.getY()), 8);
+                    }if(selectedIndex != -1){
+                        whatSelected = myMod.getShape(selectedIndex).rotationHit(new Point2D.Double(e.getX(), e.getY()), 4);
                         if (whatSelected.name().equals(SelectPoint.Center.name())) {
                             startPress.setLocation(e.getX(), e.getY());
                         }
                     }
-                } else {
-                    whatSelected = myMod.getShape(selectedIndex).rotationHit(new Point2D.Double(e.getX(), e.getY()), 8);
-                    switch (whatSelected) {
+                }else{
+                    whatSelected = myMod.getShape(selectedIndex).rotationHit(new Point2D.Double(e.getX(), e.getY()), 4);
+                    switch (whatSelected){
                         case None:
-                            for (int i = 0; i < myMod.getSize(); i++) {
-                                if (myMod.getShape(i).pointInShape(new Point2D.Double(e.getX(), e.getY()), 8)) {
+                            int i;
+                            for(i = 0; i < myMod.getSize(); i++){
+                                if(myMod.getShape(i).pointInShape(new Point2D.Double(e.getX(), e.getY()), 4)){
                                     selectedIndex = i;
                                     myView.setSelected(selectedIndex);
                                     GUIFunctions.changeSelectedColor(myMod.getShape(selectedIndex).getColor());
                                     GUIFunctions.refresh();
                                     whatSelected = SelectPoint.Center;
                                     startPress.setLocation(e.getX(), e.getY());
-                                    i = myMod.getSize();
+                                    i = myMod.getSize() + 1;
                                 }
+                            }
+                            if(i == myMod.getSize()){
+                                selectedIndex = -1;
+                                myView.setSelected(selectedIndex);
+                                GUIFunctions.refresh();
+                                whatSelected = SelectPoint.Center;
                             }
                             break;
                         case Center:
                             startPress.setLocation(e.getX(), e.getY());
                             break;
                         case LinePoint:
-                            break;
-                        case LinePointTwo:
                             break;
                         case Rotation:
                             Point2D.Double myCenter = myMod.getShape(selectedIndex).getCenter();
@@ -407,7 +403,7 @@ public class MyController implements CS355Controller {
     public void mouseReleased(MouseEvent e) {
         switch (drawShape) {
             case LINE:
-                ((Line) myShape).setEnd(new Point2D.Double(e.getX() - myShape.getCenter().getX(), e.getY() - myShape.getCenter().getY()));
+                ((Line)myShape).setEnd(new Point2D.Double(e.getX() - myShape.getCenter().getX(), e.getY() - myShape.getCenter().getY()));
                 myMod.addShape(myShape);
                 break;
             case SQUARE: //commit square
@@ -417,11 +413,11 @@ public class MyController implements CS355Controller {
                 myMod.addShape(myShape);
                 break;
             case CIRCLE:
-                myShape = circConvert.makeCircle((Square) myShape);
+                myShape = circConvert.makeCircle((Square)myShape);
                 myMod.addShape(myShape);
                 break;
             case ELLIPSE:
-                myShape = ellipseConvert.makeEllipse((Rectangle) myShape);
+                myShape = ellipseConvert.makeEllipse((Rectangle)myShape);
                 myMod.addShape(myShape);
                 break;
             case TRIANGLE:
@@ -442,148 +438,155 @@ public class MyController implements CS355Controller {
     public void mouseExited(MouseEvent e) {
     }
 
-    public void quadOneS() {
+    public void quadOneS(){
         height = -height;
-        if (width > height) {//add height
-            (myShape).setCenter(new Point2D.Double(startPress.getX() + (height / 2), startPress.getY() - (height / 2)));
-            ((Square) myShape).setSize(height);
-        } else {//add width
-            (myShape).setCenter(new Point2D.Double(startPress.getX() + (width / 2), startPress.getY() - width / 2));
-            ((Square) myShape).setSize(width);
+        if(width > height){//add height
+            (myShape).setCenter(new Point2D.Double(startPress.getX() + (height/2), startPress.getY() - (height/2)));
+            ((Square)myShape).setSize(height);
+        }else{//add width
+            (myShape).setCenter(new Point2D.Double(startPress.getX() + (width/2), startPress.getY() - width/2));
+            ((Square)myShape).setSize(width);
         }
     }
-
-    public void quadTwoS() {
-        if (width < height) {//add height
-            (myShape).setCenter(new Point2D.Double(startPress.getX() + (height / 2), startPress.getY() + (height / 2)));
-            ((Square) myShape).setSize(-height);
-        } else {//add width
-            (myShape).setCenter(new Point2D.Double(startPress.getX() + (width / 2), startPress.getY() + (width / 2)));
-            ((Square) myShape).setSize(-width);
+    public void quadTwoS(){
+        if(width < height){//add height
+            (myShape).setCenter(new Point2D.Double(startPress.getX() + (height/2), startPress.getY() + (height/2) ));
+            ((Square)myShape).setSize(-height);
+        }else{//add width
+            (myShape).setCenter(new Point2D.Double(startPress.getX() + (width/2), startPress.getY() + (width/2) ));
+            ((Square)myShape).setSize(-width);
         }
     }
-
-    public void quadThreeS() {
+    public void quadThreeS(){
         width = -width;
-        if (width > height) {//add height
-            (myShape).setCenter(new Point2D.Double(startPress.getX() - (height / 2), startPress.getY() + (height / 2)));
-            ((Square) myShape).setSize(height);
-        } else {//add width
-            (myShape).setCenter(new Point2D.Double(startPress.getX() - (width / 2), startPress.getY() + (width / 2)));
-            ((Square) myShape).setSize(width);
+        if(width > height){//add height
+            (myShape).setCenter(new Point2D.Double(startPress.getX() - (height/2), startPress.getY() + (height/2) ));
+            ((Square)myShape).setSize(height);
+        }else{//add width
+            (myShape).setCenter(new Point2D.Double(startPress.getX() - (width/2), startPress.getY() + (width/2) ));
+            ((Square)myShape).setSize(width);
+        }
+    }
+    public void quadFourS(){
+        if(width > height){//add height
+            (myShape).setCenter(new Point2D.Double(startPress.getX() + (height/2), startPress.getY() + (height/2)));
+            ((Square)myShape).setSize(height);
+        }else{//add width
+            (myShape).setCenter(new Point2D.Double(startPress.getX() + (width/2), startPress.getY() + (width/2)));
+            ((Square)myShape).setSize(width);
         }
     }
 
-    public void quadFourS() {
-        if (width > height) {//add height
-            (myShape).setCenter(new Point2D.Double(startPress.getX() + (height / 2), startPress.getY() + (height / 2)));
-            ((Square) myShape).setSize(height);
-        } else {//add width
-            (myShape).setCenter(new Point2D.Double(startPress.getX() + (width / 2), startPress.getY() + (width / 2)));
-            ((Square) myShape).setSize(width);
-        }
-    }
-
-    public void quadOneR() {
+    public void quadOneR(){
         height = -height;
-        (myShape).setCenter(new Point2D.Double(startPress.getX() + width / 2, startPress.getY() - height / 2));
-        ((Rectangle) myShape).setHeight(height);
-        ((Rectangle) myShape).setWidth(width);
+        (myShape).setCenter(new Point2D.Double(startPress.getX() + width/2, startPress.getY() - height/2));
+        ((Rectangle)myShape).setHeight(height);
+        ((Rectangle)myShape).setWidth(width);
     }
-
-    public void quadTwoR() {
-        (myShape).setCenter(new Point2D.Double(startPress.getX() + width / 2, startPress.getY() + height / 2));
-        ((Rectangle) myShape).setHeight(-height);
-        ((Rectangle) myShape).setWidth(-width);
+    public void quadTwoR(){
+        (myShape).setCenter(new Point2D.Double(startPress.getX() + width/2, startPress.getY() + height/2));
+        ((Rectangle)myShape).setHeight(-height);
+        ((Rectangle)myShape).setWidth(-width);
     }
-
-    public void quadThreeR() {
+    public void quadThreeR(){
         width = -width;
-        (myShape).setCenter(new Point2D.Double(startPress.getX() - width / 2, startPress.getY() + height / 2));
-        ((Rectangle) myShape).setHeight(height);
-        ((Rectangle) myShape).setWidth(width);
+        (myShape).setCenter(new Point2D.Double(startPress.getX() - width/2, startPress.getY() + height/2));
+        ((Rectangle)myShape).setHeight(height);
+        ((Rectangle)myShape).setWidth(width);
     }
-
-    public void quadFourR() {
-        (myShape).setCenter(new Point2D.Double(startPress.getX() + width / 2, startPress.getY() + height / 2));
-        ((Rectangle) myShape).setHeight(height);
-        ((Rectangle) myShape).setWidth(width);
-    }
-
-    public void selectS() {
-        if (width < 0) {
-            if (height < 0) {//2
-                quadTwoS();
-            } else {//3
-                quadThreeS();
-            }
-        } else {
-            if (height < 0) {//1
-                quadOneS();
-            } else {//4
-                quadFourS();
-            }
-        }
-    }
-
-    public void selectR() {
-        if (width < 0) {
-            if (height < 0) {//2
-                quadTwoR();
-            } else {//3
-                quadThreeR();
-            }
-        } else {
-            if (height < 0) {//1
-                quadOneR();
-            } else {//4
-                quadFourR();
-            }
-        }
+    public void quadFourR(){
+        (myShape).setCenter(new Point2D.Double(startPress.getX() + width/2, startPress.getY() + height/2));
+        ((Rectangle)myShape).setHeight(height);
+        ((Rectangle)myShape).setWidth(width);
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        double xOff;
-        double yOff;
-        Point2D.Double myCenter;
         switch (drawShape) {
             case LINE:
-                ((Line) myShape).setEnd(new Point2D.Double(e.getX() - myShape.getCenter().getX(), e.getY() - myShape.getCenter().getY()));
+                ((Line)myShape).setEnd(new Point2D.Double(e.getX() - myShape.getCenter().getX(), e.getY() - myShape.getCenter().getY()));
                 myView.setDrawing(myShape);
                 break;
             case SQUARE:
                 width = e.getX() - startPress.getX();
                 height = e.getY() - startPress.getY();
-                selectS();
+                if(width < 0){
+                    if(height < 0){//2
+                        quadTwoS();
+                    } else{//3
+                        quadThreeS();
+                    }
+                }else{
+                    if(height < 0){//1
+                        quadOneS();
+                    } else{//4
+                        quadFourS();
+                    }
+                }
                 myView.setDrawing(myShape);
                 break;
             case RECTANGLE:
                 width = e.getX() - startPress.getX();
                 height = e.getY() - startPress.getY();
-                selectR();
+                if(width < 0){
+                    if(height < 0){//2
+                        quadTwoR();
+                    } else{//3
+                        quadThreeR();
+                    }
+                }else{
+                    if(height < 0){//1
+                        quadOneR();
+                    } else{//4
+                        quadFourR();
+                    }
+                }
                 myView.setDrawing(myShape);
                 break;
             case CIRCLE:
                 width = e.getX() - startPress.getX();
                 height = e.getY() - startPress.getY();
-                selectS();
+                if(width < 0){
+                    if(height < 0){//2
+                        quadTwoS();
+                    } else{//3
+                        quadThreeS();
+                    }
+                }else{
+                    if(height < 0){//1
+                        quadOneS();
+                    } else{//4
+                        quadFourS();
+                    }
+                }
                 myView.setDrawing(circConvert.makeCircle((Square) myShape));
                 break;
             case ELLIPSE:
                 width = e.getX() - startPress.getX();
                 height = e.getY() - startPress.getY();
-                selectR();
+                if(width < 0){
+                    if(height < 0){//2
+                        quadTwoR();
+                    } else{//3
+                        quadThreeR();
+                    }
+                }else{
+                    if(height < 0){//1
+                        quadOneR();
+                    } else{//4
+                        quadFourR();
+                    }
+                }
                 myView.setDrawing(ellipseConvert.makeEllipse((Rectangle) myShape));
                 break;
             case TRIANGLE:
                 break;
             case SELECT:
-                switch (whatSelected) {
+                switch (whatSelected){
                     case None:
                         return;
                     case Rotation:
-                        myCenter = myMod.getShape(selectedIndex).getCenter();
+                        Point2D.Double myCenter = myMod.getShape(selectedIndex).getCenter();
                         rotation = Math.atan2(e.getY() - myCenter.getY(), e.getX() - myCenter.getX());
                         GUIFunctions.printf("rotation " + rotation, 0);
                         rotation += 1.57;
@@ -592,21 +595,14 @@ public class MyController implements CS355Controller {
                         GUIFunctions.refresh();
                         break;
                     case LinePoint:
-                        ((Line)myMod.getShape(selectedIndex)).changeCenter(new Point2D.Double(e.getX(), e.getY()));
-                        myMod.notifyChanged();
-                        GUIFunctions.refresh();
-                        break;
-                    case LinePointTwo:
-                        ((Line)myMod.getShape(selectedIndex)).setAffEnd(new Point2D.Double(e.getX(), e.getY()));
-                        myMod.notifyChanged();
-                        GUIFunctions.refresh();
                         break;
                     case Center:
-                        xOff = startPress.getX() - e.getX();
-                        yOff = startPress.getY() - e.getY();
+                        double xOff = startPress.getX() - e.getX();
+                        double yOff = startPress.getY() - e.getY();
                         startPress.setLocation(e.getX(), e.getY());
-                        myCenter = myMod.getShape(selectedIndex).getCenter();
-                        myCenter.setLocation(myCenter.getX() - xOff, myCenter.getY() - yOff);
+                        GUIFunctions.printf("Should be moving",0);
+                        Point2D.Double myDouble = myMod.getShape(selectedIndex).getCenter();
+                        myDouble.setLocation(myDouble.getX() - xOff, myDouble.getY() - yOff);
                         myMod.notifyChanged();
                         GUIFunctions.refresh();
                         break;
