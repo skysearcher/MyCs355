@@ -152,6 +152,7 @@ public class MyController implements CS355Controller{
             myView.setZoom((double)zoom);
             GUIFunctions.setZoomText(((double)zoom)/100);
             GUIFunctions.printf("Zoom In stuck " + zoom, 0);
+            GUIFunctions.refresh();
         }
         thickness = 400 - zoom + 25;
         GUIFunctions.setHScrollBarKnob(thickness);
@@ -169,6 +170,7 @@ public class MyController implements CS355Controller{
             myView.setZoom((double)zoom);
             GUIFunctions.setZoomText(((double)zoom)/100);
             GUIFunctions.printf("Zoom Out stuck " + zoom, 0);
+            GUIFunctions.refresh();
         }
         thickness = 400 - zoom + 25;
         GUIFunctions.setHScrollBarKnob(thickness);

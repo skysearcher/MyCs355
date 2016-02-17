@@ -13,17 +13,21 @@ public class DrawableLine implements DrawableShape {
     private int endX;
     private int endY;
     AffineTransform objToWorld;
+    private double zoomD;
+
     public DrawableLine(Shape givenShape){
         innerLine = givenShape;
         endX = (int)((Line)innerLine).getEnd().getX();
         endY = (int)((Line)innerLine).getEnd().getY();
-        objToWorld = new AffineTransform();
-        objToWorld.translate(innerLine.getCenter().getX(), innerLine.getCenter().getY());
+
 
     }
 
     @Override
     public void onDraw(Graphics2D g2d, AffineTransform zoom) {
+        zoomD = zoom.getScaleX();
+        objToWorld = new AffineTransform();
+        objToWorld.translate(innerLine.getCenter().getX(), innerLine.getCenter().getY());
         objToWorld.concatenate(zoom);
         g2d.setTransform(objToWorld);
         g2d.setColor(innerLine.getColor());
@@ -33,9 +37,11 @@ public class DrawableLine implements DrawableShape {
 
     @Override
     public void drawSelection(Graphics2D g2d) {
+        objToWorld = new AffineTransform();
+        objToWorld.translate(innerLine.getCenter().getX(), innerLine.getCenter().getY());
         g2d.setTransform(objToWorld);
         g2d.setColor(Color.RED);
         g2d.drawOval(-5 ,(-5) , 10, 10);
-        g2d.drawOval((endX - 5),(endY - 5) , 10, 10);
+        g2d.drawOval((int)(endX*zoomD - 5),(int)(endY*zoomD - 5) , 10, 10);
     }
 }

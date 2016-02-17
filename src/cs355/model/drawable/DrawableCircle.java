@@ -14,16 +14,19 @@ public class DrawableCircle implements DrawableShape {
     private Shape innerCircle;
     private double radius;
     AffineTransform objToWorld;
+    private double zoomD;
 
     public DrawableCircle(Shape givenShape) {
         innerCircle = givenShape;
         radius = ((Circle) givenShape).getRadius();
-        objToWorld = new AffineTransform();
-        objToWorld.translate(innerCircle.getCenter().getX(), innerCircle.getCenter().getY());
+
     }
 
     @Override
     public void onDraw(Graphics2D g2d, AffineTransform zoom) {
+        zoomD = zoom.getScaleX();
+        objToWorld = new AffineTransform();
+        objToWorld.translate(innerCircle.getCenter().getX(), innerCircle.getCenter().getY());
         objToWorld.concatenate(zoom);
         g2d.setTransform(objToWorld);
         g2d.setColor(innerCircle.getColor());
@@ -32,9 +35,11 @@ public class DrawableCircle implements DrawableShape {
 
     @Override
     public void drawSelection(Graphics2D g2d) {
+        objToWorld = new AffineTransform();
+        objToWorld.translate(innerCircle.getCenter().getX(), innerCircle.getCenter().getY());
         g2d.setTransform(objToWorld);
         g2d.setColor(Color.RED);
-        g2d.drawRect((int) (-radius),(int) (-radius) , (int) (radius * 2), (int) (radius * 2));
+        g2d.drawRect((int) (-radius * zoomD),(int) (-radius * zoomD) , (int) (radius * zoomD * 2), (int) (radius * zoomD * 2));
     }
 
 }

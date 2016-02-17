@@ -14,19 +14,22 @@ public class DrawableEllipse implements DrawableShape{
     private Shape innerEllipse;
     private double width;
     private double height;
-    AffineTransform objToWorld = new AffineTransform();
+    AffineTransform objToWorld;
+    private double zoomD;
 
     public DrawableEllipse(Shape givenShape){
         innerEllipse = givenShape;
         width = ((Ellipse)innerEllipse).getWidth();
         height = ((Ellipse)innerEllipse).getHeight();
-        objToWorld = new AffineTransform();
-        objToWorld.translate(innerEllipse.getCenter().getX(), innerEllipse.getCenter().getY());
-        objToWorld.rotate(innerEllipse.getRotation());
+
     }
 
     @Override
     public void onDraw(Graphics2D g2d, AffineTransform zoom) {
+        zoomD = zoom.getScaleX();
+        objToWorld = new AffineTransform();
+        objToWorld.translate(innerEllipse.getCenter().getX(), innerEllipse.getCenter().getY());
+        objToWorld.rotate(innerEllipse.getRotation());
         objToWorld.concatenate(zoom);
         g2d.setTransform(objToWorld);
         g2d.setColor(innerEllipse.getColor());
@@ -36,9 +39,12 @@ public class DrawableEllipse implements DrawableShape{
 
     @Override
     public void drawSelection(Graphics2D g2d) {
+        objToWorld = new AffineTransform();
+        objToWorld.translate(innerEllipse.getCenter().getX(), innerEllipse.getCenter().getY());
+        objToWorld.rotate(innerEllipse.getRotation());
         g2d.setTransform(objToWorld);
         g2d.setColor(Color.RED);
-        g2d.drawOval((-5), (int)(-(height/2) - 20) , 10, 10);
-        g2d.drawRect((int)(-width/2),(int)(-height/2) , (int)(width), (int)(height));
+        g2d.drawOval((-5), (int)(-((height*zoomD)/2) - 20) , 10, 10);
+        g2d.drawRect((int) ((-width*zoomD - 1)/2),(int) (((-height * zoomD - 1)/2)) , (int) ((width*zoomD)), (int) (height * zoomD));
     }
 }
