@@ -23,7 +23,8 @@ public class DrawableCircle implements DrawableShape {
     }
 
     @Override
-    public void onDraw(Graphics2D g2d) {
+    public void onDraw(Graphics2D g2d, AffineTransform zoom) {
+        objToWorld.concatenate(zoom);
         g2d.setTransform(objToWorld);
         g2d.setColor(innerCircle.getColor());
         g2d.fillOval((int) (-radius),(int) (-radius) , (int) (radius * 2), (int) (radius * 2));

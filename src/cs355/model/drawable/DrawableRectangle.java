@@ -2,6 +2,7 @@ package cs355.model.drawable;
 
 import cs355.model.drawing.Rectangle;
 import cs355.model.drawing.Shape;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
@@ -14,21 +15,21 @@ public class DrawableRectangle implements DrawableShape {
     private int width;
     AffineTransform objToWorld;
 
-    public DrawableRectangle(Shape givenShape){
+    public DrawableRectangle(Shape givenShape) {
         innerRectangle = givenShape;
-        height = (int)((Rectangle)innerRectangle).getHeight();
-        width = (int)((Rectangle)innerRectangle).getWidth();
+        height = (int) ((Rectangle) innerRectangle).getHeight();
+        width = (int) ((Rectangle) innerRectangle).getWidth();
         objToWorld = new AffineTransform();
         objToWorld.translate(innerRectangle.getCenter().getX(), innerRectangle.getCenter().getY());
         objToWorld.rotate(innerRectangle.getRotation());
     }
 
     @Override
-    public void onDraw(Graphics2D g2d) {
-
+    public void onDraw(Graphics2D g2d, AffineTransform zoom) {
+        objToWorld.concatenate(zoom);
         g2d.setTransform(objToWorld);
         g2d.setColor(innerRectangle.getColor());
-        g2d.fillRect(-width/2, -height/2, width, height);
+        g2d.fillRect(-width / 2, -height / 2, width, height);
 //        drawSelection(g2d);
     }
 
@@ -36,7 +37,7 @@ public class DrawableRectangle implements DrawableShape {
     public void drawSelection(Graphics2D g2d) {
         g2d.setTransform(objToWorld);
         g2d.setColor(Color.RED);
-        g2d.drawOval((-5), (-(height/2) - 20) , 10, 10);
-        g2d.drawRect((-width/2),(-height/2) , (width), (height));
+        g2d.drawOval((-5), (-(height / 2) - 20), 10, 10);
+        g2d.drawRect((-width / 2), (-height / 2), (width), (height));
     }
 }

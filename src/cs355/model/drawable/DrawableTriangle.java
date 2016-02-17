@@ -33,7 +33,8 @@ public class DrawableTriangle implements DrawableShape{
     }
 
     @Override
-    public void onDraw(Graphics2D g2d) {
+    public void onDraw(Graphics2D g2d, AffineTransform zoom) {
+        objToWorld.concatenate(zoom);
         g2d.setTransform(objToWorld);
         g2d.setColor(innerTriangle.getColor());
         g2d.fillPolygon(p);

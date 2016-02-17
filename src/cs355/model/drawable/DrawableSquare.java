@@ -25,7 +25,8 @@ public class DrawableSquare implements DrawableShape{
     }
 
     @Override
-    public void onDraw(Graphics2D g2d) {
+    public void onDraw(Graphics2D g2d, AffineTransform zoom) {
+        objToWorld.concatenate(zoom);
         g2d.setTransform(objToWorld);
         g2d.setColor(innerSquare.getColor());
         g2d.fillRect((int)(-width/2),(int)(-height/2), (int)width, (int)height);

@@ -26,7 +26,8 @@ public class DrawableEllipse implements DrawableShape{
     }
 
     @Override
-    public void onDraw(Graphics2D g2d) {
+    public void onDraw(Graphics2D g2d, AffineTransform zoom) {
+        objToWorld.concatenate(zoom);
         g2d.setTransform(objToWorld);
         g2d.setColor(innerEllipse.getColor());
         g2d.fillOval((int)(- width/2), (int)(- height/2), (int)(width), (int)(height));

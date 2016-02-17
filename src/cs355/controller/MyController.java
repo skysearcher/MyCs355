@@ -157,7 +157,7 @@ public class MyController implements CS355Controller{
         GUIFunctions.setHScrollBarKnob(thickness);
         GUIFunctions.setHScrollBarPosit(horizontalPos);
         GUIFunctions.setVScrollBarKnob(thickness);
-        GUIFunctions.setVScrollBarKnob(verticalPos);
+        GUIFunctions.setVScrollBarPosit(verticalPos);
 
     }
 
@@ -174,7 +174,7 @@ public class MyController implements CS355Controller{
         GUIFunctions.setHScrollBarKnob(thickness);
         GUIFunctions.setHScrollBarPosit(horizontalPos);
         GUIFunctions.setVScrollBarKnob(thickness);
-        GUIFunctions.setVScrollBarKnob(verticalPos);
+        GUIFunctions.setVScrollBarPosit(verticalPos);
     }
 
     @Override
