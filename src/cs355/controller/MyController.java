@@ -372,7 +372,7 @@ public class MyController implements CS355Controller{
                                 selectedIndex = -1;
                                 myView.setSelected(selectedIndex);
                                 GUIFunctions.refresh();
-                                whatSelected = SelectPoint.Center;
+                                whatSelected = SelectPoint.None;
                             }
                             break;
                         case Center:
