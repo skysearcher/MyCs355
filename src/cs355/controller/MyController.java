@@ -34,11 +34,13 @@ public class MyController implements CS355Controller{
     private Point2D.Double one;
     private Point2D.Double two;
     private Point2D.Double three;
-    private Point2D.Double rotationStart;
     private int selectedIndex;
-    private int selectPoint;
     private SelectPoint whatSelected;
     private double rotation;
+    private double tolerance;
+    private int zoom;
+    private int horizontalPos;
+    private int verticalPos;
 
 
     public MyController(MyModel givenModel, MyViewRefresh theView){
@@ -49,12 +51,14 @@ public class MyController implements CS355Controller{
         drawColor = Color.white;
         startPress = new Point2D.Double(0, 0);
         squareLeft = new Point2D.Double(0, 0);
-        rotationStart = new Point2D.Double(0,0);
         circConvert = new SquareCircle();
         ellipseConvert = new RectangleEllipse();
         selectedIndex = -1;
-        selectPoint = -1;
         whatSelected = SelectPoint.None;
+        tolerance = 8;
+        zoom = 100;
+        horizontalPos = 0;
+        verticalPos = 0;
     }
     @Override
     public void colorButtonHit(Color c) {
@@ -142,24 +146,40 @@ public class MyController implements CS355Controller{
 
     @Override
     public void zoomInButtonHit() {
-        GUIFunctions.printf("Zoom In stuck", 0);
-        drawShape = TShapeEnum.NONE;
+        if(zoom != 400){
+            zoom = zoom * 2;
+            GUIFunctions.setZoomText(((double)zoom)/100);
+            GUIFunctions.printf("Zoom In stuck " + zoom, 0);
+        }
+        GUIFunctions.setHScrollBarKnob(400 - zoom + 25);
+        GUIFunctions.setHScrollBarPosit(horizontalPos);
+
     }
 
     @Override
     public void zoomOutButtonHit() {
-        GUIFunctions.printf("Zoom Out stuck", 0);
-        drawShape = TShapeEnum.NONE;
+        int thickness;
+        if(zoom != 25){
+            zoom = zoom / 2;
+            GUIFunctions.setZoomText(((double)zoom)/100);
+            GUIFunctions.printf("Zoom Out stuck " + zoom, 0);
+        }
+        thickness = 400 - zoom + 25;
+        GUIFunctions.setHScrollBarKnob(thickness);
+        horizontalPos = thickness/2;
+        GUIFunctions.setHScrollBarPosit(horizontalPos);
     }
 
     @Override
     public void hScrollbarChanged(int value) {
-        GUIFunctions.printf("Hroizontal Scroll Bar stuck", 0);
+        GUIFunctions.printf("H Changed " + value, 0);
+        horizontalPos = value;
     }
 
     @Override
     public void vScrollbarChanged(int value) {
-        GUIFunctions.printf("Vertical Scroll Bar stuck", 0);
+        GUIFunctions.printf("V Changed " + value, 0);
+        verticalPos = value;
     }
 
     @Override
@@ -367,7 +387,7 @@ public class MyController implements CS355Controller{
             case SELECT:
                 if(selectedIndex == -1){
                     for(int i = 0; i < myMod.getSize(); i++){
-                        if(myMod.getShape(i).pointInShape(new Point2D.Double(e.getX(), e.getY()), 4)){
+                        if(myMod.getShape(i).pointInShape(new Point2D.Double(e.getX(), e.getY()), tolerance)){
                             selectedIndex = i;
                             myView.setSelected(selectedIndex);
                             GUIFunctions.changeSelectedColor(myMod.getShape(selectedIndex).getColor());
@@ -375,18 +395,18 @@ public class MyController implements CS355Controller{
                             i = myMod.getSize();
                         }
                     }if(selectedIndex != -1){
-                        whatSelected = myMod.getShape(selectedIndex).rotationHit(new Point2D.Double(e.getX(), e.getY()), 4);
+                        whatSelected = myMod.getShape(selectedIndex).rotationHit(new Point2D.Double(e.getX(), e.getY()), tolerance);
                         if (whatSelected.name().equals(SelectPoint.Center.name())) {
                             startPress.setLocation(e.getX(), e.getY());
                         }
                     }
                 }else{
-                    whatSelected = myMod.getShape(selectedIndex).rotationHit(new Point2D.Double(e.getX(), e.getY()), 4);
+                    whatSelected = myMod.getShape(selectedIndex).rotationHit(new Point2D.Double(e.getX(), e.getY()), tolerance);
                     switch (whatSelected){
                         case None:
                             int i;
                             for(i = 0; i < myMod.getSize(); i++){
-                                if(myMod.getShape(i).pointInShape(new Point2D.Double(e.getX(), e.getY()), 4)){
+                                if(myMod.getShape(i).pointInShape(new Point2D.Double(e.getX(), e.getY()), tolerance)){
                                     selectedIndex = i;
                                     myView.setSelected(selectedIndex);
                                     GUIFunctions.changeSelectedColor(myMod.getShape(selectedIndex).getColor());

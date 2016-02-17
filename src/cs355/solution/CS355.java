@@ -14,19 +14,24 @@ import java.awt.*;
  */
 public class CS355 {
 
-	/**
-	 * This is where it starts.
-	 * @param args = the command line arguments
-	 */
-	public static void main(String[] args) {
+    /**
+     * This is where it starts.
+     *
+     * @param args = the command line arguments
+     */
+    public static void main(String[] args) {
 
-		// Fill in the parameters below with your controller and view.
-		MyModel myMod = new MyModel();
-		MyViewRefresh myView = new MyViewRefresh(myMod);
-		MyController myCont = new MyController(myMod, myView);
-		myMod.addObserver(myView);
-		GUIFunctions.createCS355Frame(myCont, myView);
-		GUIFunctions.changeSelectedColor(Color.white);
-		GUIFunctions.refresh();
-	}
+        // Fill in the parameters below with your controller and view.
+        MyModel myMod = new MyModel();
+        MyViewRefresh myView = new MyViewRefresh(myMod);
+        MyController myCont = new MyController(myMod, myView);
+        myMod.addObserver(myView);
+        GUIFunctions.createCS355Frame(myCont, myView);
+        GUIFunctions.changeSelectedColor(Color.white);
+        GUIFunctions.refresh();
+        GUIFunctions.setHScrollBarMax(400);
+        GUIFunctions.setHScrollBarMin(0);
+        GUIFunctions.setHScrollBarKnob(400);
+        GUIFunctions.setHScrollBarPosit(200);
+    }
 }
