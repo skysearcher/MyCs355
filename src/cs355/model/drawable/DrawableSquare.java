@@ -16,6 +16,7 @@ public class DrawableSquare implements DrawableShape{
     private double width;
     AffineTransform objToWorld;
     private double zoomD;
+    private AffineTransform zoomTrans;
 
     public DrawableSquare(Shape givenShape){
         innerSquare = givenShape;
@@ -25,6 +26,7 @@ public class DrawableSquare implements DrawableShape{
 
     @Override
     public void onDraw(Graphics2D g2d, AffineTransform zoom) {
+        zoomTrans = zoom;
         zoomD = zoom.getScaleX();
         objToWorld = new AffineTransform();
         objToWorld.translate(innerSquare.getCenter().getX(), innerSquare.getCenter().getY());
@@ -38,7 +40,7 @@ public class DrawableSquare implements DrawableShape{
     @Override
     public void drawSelection(Graphics2D g2d) {
         objToWorld = new AffineTransform();
-        objToWorld.translate(innerSquare.getCenter().getX(), innerSquare.getCenter().getY());
+        objToWorld.translate(innerSquare.getCenter().getX() + zoomTrans.getTranslateX(), innerSquare.getCenter().getY() + zoomTrans.getTranslateY());
         objToWorld.rotate(innerSquare.getRotation());
         g2d.setTransform(objToWorld);
         g2d.setColor(Color.RED);

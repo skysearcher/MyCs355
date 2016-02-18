@@ -11,6 +11,7 @@ import cs355.view.MyViewRefresh;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.util.Iterator;
@@ -38,12 +39,16 @@ public class MyController implements CS355Controller{
     private SelectPoint whatSelected;
     private double rotation;
     private double tolerance;
-    private int zoom;
-    private int horizontalPos;
-    private int verticalPos;
+    private double zoom;
+    private double horizontalPos;
+    private double verticalPos;
+    private AffineTransform viewToWorldClick;
+    private int screenSize;
+    private AffineTransform viewToWorld;
 
 
     public MyController(MyModel givenModel, MyViewRefresh theView){
+        screenSize = 2048;
         myView = theView;
         myMod = givenModel;
         drawShape = TShapeEnum.NONE;
@@ -59,6 +64,11 @@ public class MyController implements CS355Controller{
         zoom = 100;
         horizontalPos = 0;
         verticalPos = 0;
+        viewToWorldClick = new AffineTransform();
+        viewToWorldClick.setTransform(zoom/100, 0, 0, zoom/100, -screenSize*(horizontalPos/400), -screenSize*(verticalPos/400));
+        viewToWorld = new AffineTransform();
+        viewToWorld.setTransform(zoom/100, 0, 0, zoom/100, screenSize*(horizontalPos/400), screenSize*(verticalPos/400));
+        myView.setZoom(viewToWorld);
     }
     @Override
     public void colorButtonHit(Color c) {
@@ -146,49 +156,61 @@ public class MyController implements CS355Controller{
 
     @Override
     public void zoomInButtonHit() {
-        int thickness;
+        double thickness;
         if(zoom != 400){
             zoom = zoom * 2;
-            myView.setZoom((double)zoom);
-            GUIFunctions.setZoomText(((double)zoom)/100);
+            viewToWorldClick.setTransform(zoom/100, 0, 0, zoom/100, -screenSize*(horizontalPos/400), -screenSize*(verticalPos/400));
+            viewToWorld.setTransform(zoom/100, 0, 0, zoom/100, screenSize*(horizontalPos/400), screenSize*(verticalPos/400));
+            myView.setZoom(viewToWorld);
+            GUIFunctions.setZoomText((zoom)/100);
             GUIFunctions.printf("Zoom In stuck " + zoom, 0);
             GUIFunctions.refresh();
         }
         thickness = 400 - zoom + 25;
-        GUIFunctions.setHScrollBarKnob(thickness);
-        GUIFunctions.setHScrollBarPosit(horizontalPos);
-        GUIFunctions.setVScrollBarKnob(thickness);
-        GUIFunctions.setVScrollBarPosit(verticalPos);
+        GUIFunctions.setHScrollBarKnob((int)thickness);
+        GUIFunctions.setHScrollBarPosit((int)horizontalPos);
+        GUIFunctions.setVScrollBarKnob((int)thickness);
+        GUIFunctions.setVScrollBarPosit((int)verticalPos);
 
     }
 
     @Override
     public void zoomOutButtonHit() {
-        int thickness;
+        double thickness;
         if(zoom != 25){
             zoom = zoom / 2;
-            myView.setZoom((double)zoom);
-            GUIFunctions.setZoomText(((double)zoom)/100);
+            viewToWorldClick.setTransform(zoom/100, 0, 0, zoom/100, -screenSize*(horizontalPos/400), -screenSize*(verticalPos/400));
+            viewToWorld.setTransform(zoom/100, 0, 0, zoom/100, screenSize*(horizontalPos/400), screenSize*(verticalPos/400));
+            myView.setZoom(viewToWorld);
+            GUIFunctions.setZoomText((zoom)/100);
             GUIFunctions.printf("Zoom Out stuck " + zoom, 0);
             GUIFunctions.refresh();
         }
         thickness = 400 - zoom + 25;
-        GUIFunctions.setHScrollBarKnob(thickness);
-        GUIFunctions.setHScrollBarPosit(horizontalPos);
-        GUIFunctions.setVScrollBarKnob(thickness);
-        GUIFunctions.setVScrollBarPosit(verticalPos);
+        GUIFunctions.setHScrollBarKnob((int)thickness);
+        GUIFunctions.setHScrollBarPosit((int)horizontalPos);
+        GUIFunctions.setVScrollBarKnob((int)thickness);
+        GUIFunctions.setVScrollBarPosit((int)verticalPos);
     }
 
     @Override
     public void hScrollbarChanged(int value) {
         GUIFunctions.printf("H Changed " + value, 0);
-        horizontalPos = value;
+        horizontalPos = 400 - value;
+        viewToWorldClick.setTransform(zoom/100, 0, 0, zoom/100, -screenSize*(horizontalPos/400), -screenSize*(verticalPos/400));
+        viewToWorld.setTransform(zoom/100, 0, 0, zoom/100, screenSize*(horizontalPos/400), screenSize*(verticalPos/400));
+        myView.setZoom(viewToWorld);
+        GUIFunctions.refresh();
     }
 
     @Override
     public void vScrollbarChanged(int value) {
         GUIFunctions.printf("V Changed " + value, 0);
-        verticalPos = value;
+        verticalPos = 400 - value;
+        viewToWorldClick.setTransform(zoom/100, 0, 0, zoom/100, -screenSize*(horizontalPos/400), -screenSize*(verticalPos/400));
+        viewToWorld.setTransform(zoom/100, 0, 0, zoom/100, screenSize*(horizontalPos/400), screenSize*(verticalPos/400));
+        myView.setZoom(viewToWorld);
+        GUIFunctions.refresh();
     }
 
     @Override
@@ -341,45 +363,48 @@ public class MyController implements CS355Controller{
     }
     @Override
     public void mousePressed(MouseEvent e) {
+        Point2D.Double myClickStart = new Point2D.Double(e.getX(), e.getY());
+        Point2D.Double myClick = new Point2D.Double();
+        viewToWorldClick.transform(myClickStart, myClick);
         switch (drawShape) {
             case LINE:
-                myShape = new Line(drawColor, new Point2D.Double(e.getX(), e.getY()), new Point2D.Double(0,0));
+                myShape = new Line(drawColor, myClick, new Point2D.Double(0,0));
                 myView.setDrawing(myShape);
                 break;
             case SQUARE:
-                startPress.setLocation(e.getX(), e.getY());
-                squareLeft.setLocation(e.getX(), e.getY());
+                startPress.setLocation(myClick.getX(), myClick.getY());
+                squareLeft.setLocation(myClick.getX(), myClick.getY());
                 myShape = new Square(drawColor, new Point2D.Double(startPress.getX(), startPress.getY()), 0);
                 myView.setDrawing(myShape);
                 break;
             case RECTANGLE:
-                startPress.setLocation(e.getX(), e.getY());
-                squareLeft.setLocation(e.getX(), e.getY());
+                startPress.setLocation(myClick.getX(), myClick.getY());
+                squareLeft.setLocation(myClick.getX(), myClick.getY());
                 myShape = new Rectangle(drawColor, new Point2D.Double(startPress.getX(), startPress.getY()), 0, 0);
                 myView.setDrawing(myShape);
                 break;
             case CIRCLE:
-                startPress.setLocation(e.getX(), e.getY());
-                squareLeft.setLocation(e.getX(), e.getY());
+                startPress.setLocation(myClick.getX(), myClick.getY());
+                squareLeft.setLocation(myClick.getX(), myClick.getY());
                 myShape = new Square(drawColor, new Point2D.Double(startPress.getX(), startPress.getY()), 0);
                 myView.setDrawing(myShape);
                 break;
             case ELLIPSE:
-                startPress.setLocation(e.getX(), e.getY());
-                squareLeft.setLocation(e.getX(), e.getY());
+                startPress.setLocation(myClick.getX(), myClick.getY());
+                squareLeft.setLocation(myClick.getX(), myClick.getY());
                 myShape = new Rectangle(drawColor, new Point2D.Double(startPress.getX(), startPress.getY()), 0, 0);
                 myView.setDrawing(myShape);
                 break;
             case TRIANGLE:
                 switch (triangleClick){
                     case 0:
-                        one = new Point2D.Double(e.getX(), e.getY());
+                        one = new Point2D.Double(myClick.getX(), myClick.getY());
                         break;
                     case 1:
-                        two = new Point2D.Double(e.getX(), e.getY());
+                        two = new Point2D.Double(myClick.getX(), myClick.getY());
                         break;
                     case 2:
-                        three = new Point2D.Double(e.getX(), e.getY());
+                        three = new Point2D.Double(myClick.getX(), myClick.getY());
                         Point2D.Double center = new Point2D.Double((one.getX() + two.getX() + three.getX())/3, (one.getY() + two.getY() + three.getY())/3 );
                         one.setLocation(one.getX() - center.getX(), one.getY() - center.getY());
                         two.setLocation(two.getX() - center.getX(), two.getY() - center.getY());
@@ -396,32 +421,33 @@ public class MyController implements CS355Controller{
             case SELECT:
                 if(selectedIndex == -1){
                     for(int i = 0; i < myMod.getSize(); i++){
-                        if(myMod.getShape(i).pointInShape(new Point2D.Double(e.getX(), e.getY()), tolerance)){
+                        if(myMod.getShape(i).pointInShape(myClick, tolerance)){
                             selectedIndex = i;
                             myView.setSelected(selectedIndex);
                             GUIFunctions.changeSelectedColor(myMod.getShape(selectedIndex).getColor());
                             GUIFunctions.refresh();
                             i = myMod.getSize();
                         }
-                    }if(selectedIndex != -1){
-                        whatSelected = myMod.getShape(selectedIndex).rotationHit(new Point2D.Double(e.getX(), e.getY()), tolerance);
+                    }
+                    if(selectedIndex != -1){
+                        whatSelected = myMod.getShape(selectedIndex).rotationHit(myClick, tolerance);
                         if (whatSelected.name().equals(SelectPoint.Center.name())) {
-                            startPress.setLocation(e.getX(), e.getY());
+                            startPress.setLocation(myClick.getX(), myClick.getY());
                         }
                     }
                 }else{
-                    whatSelected = myMod.getShape(selectedIndex).rotationHit(new Point2D.Double(e.getX(), e.getY()), tolerance);
+                    whatSelected = myMod.getShape(selectedIndex).rotationHit(myClick, tolerance);
                     switch (whatSelected){
                         case None:
                             int i;
                             for(i = 0; i < myMod.getSize(); i++){
-                                if(myMod.getShape(i).pointInShape(new Point2D.Double(e.getX(), e.getY()), tolerance)){
+                                if(myMod.getShape(i).pointInShape(myClick, tolerance)){
                                     selectedIndex = i;
                                     myView.setSelected(selectedIndex);
                                     GUIFunctions.changeSelectedColor(myMod.getShape(selectedIndex).getColor());
                                     GUIFunctions.refresh();
                                     whatSelected = SelectPoint.Center;
-                                    startPress.setLocation(e.getX(), e.getY());
+                                    startPress.setLocation(myClick.getX(), myClick.getY());
                                     i = myMod.getSize() + 1;
                                 }
                             }
@@ -433,13 +459,13 @@ public class MyController implements CS355Controller{
                             }
                             break;
                         case Center:
-                            startPress.setLocation(e.getX(), e.getY());
+                            startPress.setLocation(myClick.getX(), myClick.getY());
                             break;
                         case LinePoint:
                             break;
                         case Rotation:
                             Point2D.Double myCenter = myMod.getShape(selectedIndex).getCenter();
-                            rotation = Math.atan2(e.getY() - myCenter.getY(), e.getX() - myCenter.getX());
+                            rotation = Math.atan2(myClick.getY() - myCenter.getY(), myClick.getX() - myCenter.getX());
                             GUIFunctions.printf("rotation " + rotation, 0);
                             rotation += 1.57;
                             myMod.getShape(selectedIndex).setRotation(rotation);
@@ -458,6 +484,8 @@ public class MyController implements CS355Controller{
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        Point2D.Double myClick = new Point2D.Double(e.getX(), e.getY());
+        viewToWorldClick.transform(myClick, myClick);
         switch (drawShape) {
             case LINE:
                 ((Line)myShape).setEnd(new Point2D.Double(e.getX() - myShape.getCenter().getX(), e.getY() - myShape.getCenter().getY()));
@@ -559,14 +587,17 @@ public class MyController implements CS355Controller{
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        Point2D.Double myClickStart = new Point2D.Double(e.getX(), e.getY());
+        Point2D.Double myClick = new Point2D.Double();
+        viewToWorldClick.transform(myClickStart, myClick);
         switch (drawShape) {
             case LINE:
-                ((Line)myShape).setEnd(new Point2D.Double(e.getX() - myShape.getCenter().getX(), e.getY() - myShape.getCenter().getY()));
+                ((Line)myShape).setEnd(new Point2D.Double(myClick.getX() - myShape.getCenter().getX(), myClick.getY() - myShape.getCenter().getY()));
                 myView.setDrawing(myShape);
                 break;
             case SQUARE:
-                width = e.getX() - startPress.getX();
-                height = e.getY() - startPress.getY();
+                width = myClick.getX() - startPress.getX();
+                height = myClick.getY() - startPress.getY();
                 if(width < 0){
                     if(height < 0){//2
                         quadTwoS();
@@ -583,8 +614,8 @@ public class MyController implements CS355Controller{
                 myView.setDrawing(myShape);
                 break;
             case RECTANGLE:
-                width = e.getX() - startPress.getX();
-                height = e.getY() - startPress.getY();
+                width = myClick.getX() - startPress.getX();
+                height = myClick.getY() - startPress.getY();
                 if(width < 0){
                     if(height < 0){//2
                         quadTwoR();
@@ -601,8 +632,8 @@ public class MyController implements CS355Controller{
                 myView.setDrawing(myShape);
                 break;
             case CIRCLE:
-                width = e.getX() - startPress.getX();
-                height = e.getY() - startPress.getY();
+                width = myClick.getX() - startPress.getX();
+                height = myClick.getY() - startPress.getY();
                 if(width < 0){
                     if(height < 0){//2
                         quadTwoS();
@@ -619,8 +650,8 @@ public class MyController implements CS355Controller{
                 myView.setDrawing(circConvert.makeCircle((Square) myShape));
                 break;
             case ELLIPSE:
-                width = e.getX() - startPress.getX();
-                height = e.getY() - startPress.getY();
+                width = myClick.getX() - startPress.getX();
+                height = myClick.getY() - startPress.getY();
                 if(width < 0){
                     if(height < 0){//2
                         quadTwoR();
@@ -644,7 +675,7 @@ public class MyController implements CS355Controller{
                         return;
                     case Rotation:
                         Point2D.Double myCenter = myMod.getShape(selectedIndex).getCenter();
-                        rotation = Math.atan2(e.getY() - myCenter.getY(), e.getX() - myCenter.getX());
+                        rotation = Math.atan2(myClick.getY() - myCenter.getY(), myClick.getX() - myCenter.getX());
                         GUIFunctions.printf("rotation " + rotation, 0);
                         rotation += 1.57;
                         myMod.getShape(selectedIndex).setRotation(rotation);
@@ -654,9 +685,9 @@ public class MyController implements CS355Controller{
                     case LinePoint:
                         break;
                     case Center:
-                        double xOff = startPress.getX() - e.getX();
-                        double yOff = startPress.getY() - e.getY();
-                        startPress.setLocation(e.getX(), e.getY());
+                        double xOff = startPress.getX() - myClick.getX();
+                        double yOff = startPress.getY() - myClick.getY();
+                        startPress.setLocation(myClick.getX(), myClick.getY());
                         GUIFunctions.printf("Should be moving",0);
                         Point2D.Double myDouble = myMod.getShape(selectedIndex).getCenter();
                         myDouble.setLocation(myDouble.getX() - xOff, myDouble.getY() - yOff);

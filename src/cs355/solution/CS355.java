@@ -29,13 +29,13 @@ public class CS355 {
         GUIFunctions.createCS355Frame(myCont, myView);
         GUIFunctions.changeSelectedColor(Color.white);
         GUIFunctions.refresh();
-        GUIFunctions.setHScrollBarMax(400);
+        GUIFunctions.setHScrollBarMax(2048);
         GUIFunctions.setHScrollBarMin(0);
-        GUIFunctions.setHScrollBarKnob(400);
-        GUIFunctions.setHScrollBarPosit(200);
-        GUIFunctions.setVScrollBarMax(400);
+        GUIFunctions.setHScrollBarKnob(1024);
+        GUIFunctions.setHScrollBarPosit(0);
+        GUIFunctions.setVScrollBarMax(2048);
         GUIFunctions.setVScrollBarMin(0);
-        GUIFunctions.setVScrollBarKnob(400);
-        GUIFunctions.setVScrollBarPosit(200);
+        GUIFunctions.setVScrollBarKnob(1024);
+        GUIFunctions.setVScrollBarPosit(0);
     }
 }

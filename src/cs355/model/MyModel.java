@@ -3,6 +3,7 @@ package cs355.model;
 import cs355.model.drawing.CS355Drawing;
 import cs355.model.drawing.Shape;
 
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;

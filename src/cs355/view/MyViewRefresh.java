@@ -23,13 +23,13 @@ public class MyViewRefresh implements ViewRefresher{
     private DrawableShape shapeDrawing;
     private ShapeConverter shaper;
     private int selectedShape;
-    private double zoom;
+    private AffineTransform zoom;
 
-    public double getZoom() {
+    public AffineTransform getZoom() {
         return zoom;
     }
 
-    public void setZoom(double zoom) {
+    public void setZoom(AffineTransform zoom) {
         this.zoom = zoom;
     }
 
@@ -43,7 +43,7 @@ public class MyViewRefresh implements ViewRefresher{
         amDrawing = 0;
         start = 0;
         selectedShape = -1;
-        zoom = 100;
+        zoom = new AffineTransform();
     }
     public void setSelected(int given){
         selectedShape = given;
@@ -60,15 +60,9 @@ public class MyViewRefresh implements ViewRefresher{
     }
     @Override
     public void refreshView(Graphics2D g2d) {
-        AffineTransform zoomTransform;
-        if(zoom != 100){
-            zoomTransform = new AffineTransform(zoom/100, 0, 0, zoom/100, 0, 0);
-        }else{
-            zoomTransform = new AffineTransform();
-        }
         start++;
         for(int i = 0; i < drawShapes.size(); i++){
-            drawShapes.get(i).onDraw(g2d, zoomTransform);
+            drawShapes.get(i).onDraw(g2d, zoom);
         }
         if(selectedShape > -1){
             drawShapes.get(selectedShape).drawSelection(g2d);
@@ -76,7 +70,7 @@ public class MyViewRefresh implements ViewRefresher{
         //GUIFunctions.printf("Refresh " + start,0);
         //Draw list of Drawables
         if(amDrawing == 1){   //are you drawing?
-            shapeDrawing.onDraw(g2d, zoomTransform);
+            shapeDrawing.onDraw(g2d, zoom);
         }
 
     }
