@@ -44,7 +44,7 @@ public class MyController implements CS355Controller{
     private double verticalPos;
     private AffineTransform viewToWorldClick;
     private int screenSize;
-    private AffineTransform viewToWorld;
+    private AffineTransform worldToView;
 
 
     public MyController(MyModel givenModel, MyViewRefresh theView){
@@ -64,11 +64,21 @@ public class MyController implements CS355Controller{
         zoom = 100;
         horizontalPos = 0;
         verticalPos = 0;
+        setAffine();
+        myView.setZoom(worldToView);
+    }
+
+    public void setAffine(){
         viewToWorldClick = new AffineTransform();
-        viewToWorldClick.setTransform(zoom/100, 0, 0, zoom/100, -screenSize*(horizontalPos/400), -screenSize*(verticalPos/400));
-        viewToWorld = new AffineTransform();
-        viewToWorld.setTransform(zoom/100, 0, 0, zoom/100, screenSize*(horizontalPos/400), screenSize*(verticalPos/400));
-        myView.setZoom(viewToWorld);
+        viewToWorldClick.setToScale(1/(zoom/100), 1/(zoom/100));
+        viewToWorldClick.setToTranslation(horizontalPos, verticalPos);
+
+        worldToView = new AffineTransform();
+        worldToView.setToScale(zoom/100, zoom/100);
+        worldToView.setToTranslation(-horizontalPos, -verticalPos);
+//        worldToView.setTransform(zoom/100, 0, 0, zoom/100, -horizontalPos, -verticalPos);
+//        worldToViewTransform.setTransform(0, 0, 0, 0, -horizontalPos, -verticalPos);
+//        worldToView.concatenate(worldToViewTransform);
     }
     @Override
     public void colorButtonHit(Color c) {
@@ -159,9 +169,8 @@ public class MyController implements CS355Controller{
         double thickness;
         if(zoom != 400){
             zoom = zoom * 2;
-            viewToWorldClick.setTransform(zoom/100, 0, 0, zoom/100, -screenSize*(horizontalPos/400), -screenSize*(verticalPos/400));
-            viewToWorld.setTransform(zoom/100, 0, 0, zoom/100, screenSize*(horizontalPos/400), screenSize*(verticalPos/400));
-            myView.setZoom(viewToWorld);
+            setAffine();
+            myView.setZoom(worldToView);
             GUIFunctions.setZoomText((zoom)/100);
             GUIFunctions.printf("Zoom In stuck " + zoom, 0);
             GUIFunctions.refresh();
@@ -179,9 +188,8 @@ public class MyController implements CS355Controller{
         double thickness;
         if(zoom != 25){
             zoom = zoom / 2;
-            viewToWorldClick.setTransform(zoom/100, 0, 0, zoom/100, -screenSize*(horizontalPos/400), -screenSize*(verticalPos/400));
-            viewToWorld.setTransform(zoom/100, 0, 0, zoom/100, screenSize*(horizontalPos/400), screenSize*(verticalPos/400));
-            myView.setZoom(viewToWorld);
+            setAffine();
+            myView.setZoom(worldToView);
             GUIFunctions.setZoomText((zoom)/100);
             GUIFunctions.printf("Zoom Out stuck " + zoom, 0);
             GUIFunctions.refresh();
@@ -196,20 +204,18 @@ public class MyController implements CS355Controller{
     @Override
     public void hScrollbarChanged(int value) {
         GUIFunctions.printf("H Changed " + value, 0);
-        horizontalPos = 400 - value;
-        viewToWorldClick.setTransform(zoom/100, 0, 0, zoom/100, -screenSize*(horizontalPos/400), -screenSize*(verticalPos/400));
-        viewToWorld.setTransform(zoom/100, 0, 0, zoom/100, screenSize*(horizontalPos/400), screenSize*(verticalPos/400));
-        myView.setZoom(viewToWorld);
+        horizontalPos = value;
+        setAffine();
+        myView.setZoom(worldToView);
         GUIFunctions.refresh();
     }
 
     @Override
     public void vScrollbarChanged(int value) {
         GUIFunctions.printf("V Changed " + value, 0);
-        verticalPos = 400 - value;
-        viewToWorldClick.setTransform(zoom/100, 0, 0, zoom/100, -screenSize*(horizontalPos/400), -screenSize*(verticalPos/400));
-        viewToWorld.setTransform(zoom/100, 0, 0, zoom/100, screenSize*(horizontalPos/400), screenSize*(verticalPos/400));
-        myView.setZoom(viewToWorld);
+        verticalPos = value;
+        setAffine();
+        myView.setZoom(worldToView);
         GUIFunctions.refresh();
     }
 
@@ -363,9 +369,8 @@ public class MyController implements CS355Controller{
     }
     @Override
     public void mousePressed(MouseEvent e) {
-        Point2D.Double myClickStart = new Point2D.Double(e.getX(), e.getY());
-        Point2D.Double myClick = new Point2D.Double();
-        viewToWorldClick.transform(myClickStart, myClick);
+        Point2D.Double myClick = new Point2D.Double(e.getX(), e.getY());
+        viewToWorldClick.transform(myClick, myClick);
         switch (drawShape) {
             case LINE:
                 myShape = new Line(drawColor, myClick, new Point2D.Double(0,0));
@@ -421,7 +426,7 @@ public class MyController implements CS355Controller{
             case SELECT:
                 if(selectedIndex == -1){
                     for(int i = 0; i < myMod.getSize(); i++){
-                        if(myMod.getShape(i).pointInShape(myClick, tolerance)){
+                        if(myMod.getShape(i).pointInShape(new Point2D.Double(myClick.getX(), myClick.getY()), tolerance)){
                             selectedIndex = i;
                             myView.setSelected(selectedIndex);
                             GUIFunctions.changeSelectedColor(myMod.getShape(selectedIndex).getColor());
@@ -430,18 +435,18 @@ public class MyController implements CS355Controller{
                         }
                     }
                     if(selectedIndex != -1){
-                        whatSelected = myMod.getShape(selectedIndex).rotationHit(myClick, tolerance);
+                        whatSelected = myMod.getShape(selectedIndex).rotationHit(new Point2D.Double(myClick.getX(), myClick.getY()), tolerance);
                         if (whatSelected.name().equals(SelectPoint.Center.name())) {
                             startPress.setLocation(myClick.getX(), myClick.getY());
                         }
                     }
                 }else{
-                    whatSelected = myMod.getShape(selectedIndex).rotationHit(myClick, tolerance);
+                    whatSelected = myMod.getShape(selectedIndex).rotationHit(new Point2D.Double(myClick.getX(), myClick.getY()), tolerance);
                     switch (whatSelected){
                         case None:
                             int i;
                             for(i = 0; i < myMod.getSize(); i++){
-                                if(myMod.getShape(i).pointInShape(myClick, tolerance)){
+                                if(myMod.getShape(i).pointInShape(new Point2D.Double(myClick.getX(), myClick.getY()), tolerance)){
                                     selectedIndex = i;
                                     myView.setSelected(selectedIndex);
                                     GUIFunctions.changeSelectedColor(myMod.getShape(selectedIndex).getColor());
@@ -587,9 +592,8 @@ public class MyController implements CS355Controller{
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        Point2D.Double myClickStart = new Point2D.Double(e.getX(), e.getY());
-        Point2D.Double myClick = new Point2D.Double();
-        viewToWorldClick.transform(myClickStart, myClick);
+        Point2D.Double myClick = new Point2D.Double(e.getX(), e.getY());
+        viewToWorldClick.transform(myClick, myClick);
         switch (drawShape) {
             case LINE:
                 ((Line)myShape).setEnd(new Point2D.Double(myClick.getX() - myShape.getCenter().getX(), myClick.getY() - myShape.getCenter().getY()));

@@ -25,14 +25,19 @@ public class DrawableSquare implements DrawableShape{
     }
 
     @Override
-    public void onDraw(Graphics2D g2d, AffineTransform zoom) {
-        zoomTrans = zoom;
-        zoomD = zoom.getScaleX();
+    public void onDraw(Graphics2D g2d, AffineTransform worldToView) {
+        zoomTrans = worldToView;
+        zoomD = worldToView.getScaleX();
         objToWorld = new AffineTransform();
         objToWorld.translate(innerSquare.getCenter().getX(), innerSquare.getCenter().getY());
         objToWorld.rotate(innerSquare.getRotation());
-        objToWorld.concatenate(zoom);
+
+        objToWorld.concatenate(worldToView);
         g2d.setTransform(objToWorld);
+
+//        worldToView.concatenate(objToWorld);
+//        g2d.setTransform(worldToView);
+
         g2d.setColor(innerSquare.getColor());
         g2d.fillRect((int)(-width/2),(int)(-height/2), (int)width, (int)height);
     }
