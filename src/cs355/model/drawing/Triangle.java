@@ -110,8 +110,8 @@ public class Triangle extends Shape {
     @Override
     public boolean pointInShape(Point2D.Double pt, double tolerance) {
         AffineTransform worldToObj = new AffineTransform();
-        worldToObj.rotate(-this.getRotation());
-        worldToObj.translate(-this.getCenter().getX(), -this.getCenter().getY());
+        worldToObj.concatenate(new AffineTransform(new AffineTransform(Math.cos(-this.getRotation()),Math.sin(-this.getRotation()), Math.sin(this.getRotation()),Math.cos(-this.getRotation()), 0, 0)));
+        worldToObj.concatenate(new AffineTransform(1, 0, 0, 1, -this.getCenter().getX(), -this.getCenter().getY()));
         worldToObj.transform(pt, pt);
         return p.contains(pt.getX(), pt.getY());
     }

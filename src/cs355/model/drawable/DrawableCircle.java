@@ -30,7 +30,7 @@ public class DrawableCircle implements DrawableShape {
         zoomTrans = new AffineTransform(worldToView);
         zoomD = worldToView.getScaleX();
         objToWorld = new AffineTransform();
-        objToWorld.translate(innerCircle.getCenter().getX(), innerCircle.getCenter().getY());
+        objToWorld.concatenate(new AffineTransform(1, 0, 0, 1, innerCircle.getCenter().getX(), innerCircle.getCenter().getY()));
 
         objToView = new AffineTransform();
 

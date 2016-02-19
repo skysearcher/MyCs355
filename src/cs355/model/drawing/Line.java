@@ -102,13 +102,13 @@ public class Line extends Shape {
     }
     public void setAffEnd(Point2D.Double pt){
         AffineTransform worldToObj = new AffineTransform();
-        worldToObj.translate(-this.getCenter().getX(), -this.getCenter().getY());
+        worldToObj.concatenate(new AffineTransform(1, 0, 0, 1, -this.getCenter().getX(), -this.getCenter().getY()));
         worldToObj.transform(pt, pt);
         end = pt;
     }
     public void changeCenter(Point2D.Double pt){
         AffineTransform worldToObj = new AffineTransform();
-        worldToObj.translate(-this.getCenter().getX(), -this.getCenter().getY());
+        worldToObj.concatenate(new AffineTransform(1, 0, 0, 1, -this.getCenter().getX(), -this.getCenter().getY()));
         worldToObj.transform(pt, pt);
         end.setLocation(end.getX() - pt.getX(), end.getY() - pt.getY());
         center.setLocation(center.getX() + pt.getX(), center.getY() + pt.getY());
