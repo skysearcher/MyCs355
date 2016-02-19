@@ -119,8 +119,8 @@ public class Triangle extends Shape {
     @Override
     public boolean hitHandle(Point2D.Double pt, double zoomD) {
         double myHeight = p.getBounds().getHeight();
-        myHeight = -myHeight/2;
-        if(pt.getX() > 0 && pt.getX() < 10 && pt.getY() > myHeight && pt.getY() < myHeight + 10){
+        myHeight = ((-myHeight/2))- 20;
+        if(pt.getX() > -10 && pt.getX() < 10 && pt.getY() > myHeight && pt.getY() < myHeight + 10){
            return true;
         }else{
             return false;

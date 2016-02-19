@@ -516,13 +516,13 @@ public class MyController implements CS355Controller{
                 break;
             case SELECT:
                 if(selectedIndex == -1){
-                    for(int i = 0; i < myMod.getSize(); i++){
+                    for(int i = myMod.getSize() - 1; i > -1; i--){
                         if(myMod.getShape(i).pointInShape(new Point2D.Double(myClick.getX(), myClick.getY()), tolerance*(1/(zoom/100)))){
                             selectedIndex = i;
                             myView.setSelected(selectedIndex);
                             GUIFunctions.changeSelectedColor(myMod.getShape(selectedIndex).getColor());
                             GUIFunctions.refresh();
-                            i = myMod.getSize();
+                            i = -1;
                         }
                     }
                     if(selectedIndex != -1){
@@ -536,7 +536,7 @@ public class MyController implements CS355Controller{
                     switch (whatSelected){
                         case None:
                             int i;
-                            for(i = 0; i < myMod.getSize(); i++){
+                            for(i = myMod.getSize() - 1; i > -1; i--){
                                 if(myMod.getShape(i).pointInShape(new Point2D.Double(myClick.getX(), myClick.getY()), tolerance*(1/(zoom/100)))){
                                     selectedIndex = i;
                                     myView.setSelected(selectedIndex);
@@ -544,10 +544,10 @@ public class MyController implements CS355Controller{
                                     GUIFunctions.refresh();
                                     whatSelected = SelectPoint.Center;
                                     startPress.setLocation(myClick.getX(), myClick.getY());
-                                    i = myMod.getSize() + 1;
+                                    i = -2;
                                 }
                             }
-                            if(i == myMod.getSize()){
+                            if(i == -1){
                                 selectedIndex = -1;
                                 myView.setSelected(selectedIndex);
                                 GUIFunctions.refresh();
@@ -778,6 +778,14 @@ public class MyController implements CS355Controller{
                         GUIFunctions.refresh();
                         break;
                     case LinePoint:
+                        ((Line)myMod.getShape(selectedIndex)).changeCenter(myClick);
+                        myMod.notifyChanged();
+                        GUIFunctions.refresh();
+                        break;
+                    case LinePointTwo:
+                        ((Line)myMod.getShape(selectedIndex)).setAffEnd(myClick);
+                        myMod.notifyChanged();
+                        GUIFunctions.refresh();
                         break;
                     case Center:
                         double xOff = startPress.getX() - myClick.getX();

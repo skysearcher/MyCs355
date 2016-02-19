@@ -98,7 +98,7 @@ public class Rectangle extends Shape {
 
     @Override
     public boolean hitHandle(Point2D.Double pt, double zoomD) {
-        return pt.getY() > (-(height*zoomD)/2) - 20 && pt.getY() < (-(height*zoomD)/2) - 10 && pt.getX() > -5.0 && pt.getX() < 5.0;
+        return pt.getY() > (-(height)/2) - 20*(1/zoomD) && pt.getY() < (-(height)/2) - 10*(1/zoomD) && pt.getX() > -5.0 && pt.getX() < 5.0;
     }
 
     @Override
