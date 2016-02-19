@@ -5,6 +5,7 @@ import cs355.model.drawing.Shape;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 
 /**
  * Created by Joshua on 1/19/2016.
@@ -15,6 +16,9 @@ public class DrawableRectangle implements DrawableShape {
     private int width;
     AffineTransform objToWorld;
     private double zoomD;
+    private AffineTransform zoomTrans;
+    private AffineTransform objToView;
+    private Point2D.Double off;
 
     public DrawableRectangle(Shape givenShape) {
         innerRectangle = givenShape;
@@ -23,13 +27,22 @@ public class DrawableRectangle implements DrawableShape {
     }
 
     @Override
-    public void onDraw(Graphics2D g2d, AffineTransform zoom) {
-        zoomD = zoom.getScaleX();
+    public void onDraw(Graphics2D g2d, AffineTransform worldToView) {
+        zoomTrans = new AffineTransform(worldToView);
+        zoomD = worldToView.getScaleX();
         objToWorld = new AffineTransform();
-        objToWorld.translate(innerRectangle.getCenter().getX(), innerRectangle.getCenter().getY());
-        objToWorld.rotate(innerRectangle.getRotation());
-        objToWorld.concatenate(zoom);
-        g2d.setTransform(objToWorld);
+        objToWorld.concatenate(new AffineTransform(1, 0, 0, 1, innerRectangle.getCenter().getX(), innerRectangle.getCenter().getY()));
+        objToWorld.concatenate(new AffineTransform(Math.cos(innerRectangle.getRotation()),Math.sin(innerRectangle.getRotation()), Math.sin(-innerRectangle.getRotation()),Math.cos(innerRectangle.getRotation()), 0, 0));
+
+
+        objToView = new AffineTransform();
+
+        objToView.concatenate(worldToView);
+        objToView.concatenate(objToWorld);
+
+
+
+        g2d.setTransform(objToView);
         g2d.setColor(innerRectangle.getColor());
         g2d.fillRect(-width / 2, -height / 2, width, height);
 //        drawSelection(g2d);
@@ -38,8 +51,11 @@ public class DrawableRectangle implements DrawableShape {
     @Override
     public void drawSelection(Graphics2D g2d) {
         objToWorld = new AffineTransform();
-        objToWorld.translate(innerRectangle.getCenter().getX(), innerRectangle.getCenter().getY());
-        objToWorld.rotate(innerRectangle.getRotation());
+        off = new Point2D.Double(innerRectangle.getCenter().getX(), innerRectangle.getCenter().getY());
+        zoomTrans.transform(off, off);
+        objToWorld.concatenate(new AffineTransform(1, 0, 0, 1, off.getX(), off.getY()));
+        objToWorld.concatenate(new AffineTransform(Math.cos(innerRectangle.getRotation()),Math.sin(innerRectangle.getRotation()), Math.sin(-innerRectangle.getRotation()),Math.cos(innerRectangle.getRotation()), 0, 0));
+
         g2d.setTransform(objToWorld);
         g2d.setColor(Color.RED);
         g2d.drawOval((-5), (int)(-(height*zoomD / 2) - 20), 10, 10);

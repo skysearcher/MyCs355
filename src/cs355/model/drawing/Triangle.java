@@ -117,7 +117,7 @@ public class Triangle extends Shape {
     }
 
     @Override
-    public boolean hitHandle(Point2D.Double pt) {
+    public boolean hitHandle(Point2D.Double pt, double zoomD) {
         double myHeight = p.getBounds().getHeight();
         myHeight = -myHeight/2;
         if(pt.getX() > 0 && pt.getX() < 10 && pt.getY() > myHeight && pt.getY() < myHeight + 10){
@@ -133,11 +133,11 @@ public class Triangle extends Shape {
     }
 
     @Override
-    public SelectPoint rotationHit(Point2D.Double pt, double tolerance) {
+    public SelectPoint rotationHit(Point2D.Double pt, double tolerance, double zoom) {
         if (pointInShape(pt, tolerance)) {
             return SelectPoint.Center;
         }
-        if(hitHandle(pt)) {
+        if(hitHandle(pt, zoom)) {
             return SelectPoint.Rotation;
         } else {
             return SelectPoint.None;

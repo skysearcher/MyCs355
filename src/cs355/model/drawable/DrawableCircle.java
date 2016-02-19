@@ -15,6 +15,9 @@ public class DrawableCircle implements DrawableShape {
     private double radius;
     AffineTransform objToWorld;
     private double zoomD;
+    private AffineTransform objToView;
+    private AffineTransform zoomTrans;
+    private Point2D.Double off;
 
     public DrawableCircle(Shape givenShape) {
         innerCircle = givenShape;
@@ -23,12 +26,19 @@ public class DrawableCircle implements DrawableShape {
     }
 
     @Override
-    public void onDraw(Graphics2D g2d, AffineTransform zoom) {
-        zoomD = zoom.getScaleX();
+    public void onDraw(Graphics2D g2d, AffineTransform worldToView) {
+        zoomTrans = new AffineTransform(worldToView);
+        zoomD = worldToView.getScaleX();
         objToWorld = new AffineTransform();
         objToWorld.translate(innerCircle.getCenter().getX(), innerCircle.getCenter().getY());
-        objToWorld.concatenate(zoom);
-        g2d.setTransform(objToWorld);
+
+        objToView = new AffineTransform();
+
+        objToView.concatenate(worldToView);
+        objToView.concatenate(objToWorld);
+
+
+        g2d.setTransform(objToView);
         g2d.setColor(innerCircle.getColor());
         g2d.fillOval((int) (-radius),(int) (-radius) , (int) (radius * 2), (int) (radius * 2));
     }
@@ -36,10 +46,13 @@ public class DrawableCircle implements DrawableShape {
     @Override
     public void drawSelection(Graphics2D g2d) {
         objToWorld = new AffineTransform();
-        objToWorld.translate(innerCircle.getCenter().getX(), innerCircle.getCenter().getY());
+        off = new Point2D.Double(innerCircle.getCenter().getX(), innerCircle.getCenter().getY());
+        zoomTrans.transform(off, off);
+        objToWorld.concatenate(new AffineTransform(1, 0, 0, 1, off.getX(), off.getY()));
+
         g2d.setTransform(objToWorld);
         g2d.setColor(Color.RED);
-        g2d.drawRect((int) (-radius * zoomD),(int) (-radius * zoomD) , (int) (radius * zoomD * 2), (int) (radius * zoomD * 2));
+        g2d.drawRect((int) (-radius * zoomD),(int) (-radius * zoomD) , (int) ((radius * zoomD) * 2), (int) ((radius * zoomD) * 2));
     }
 
 }

@@ -16,6 +16,9 @@ public class DrawableEllipse implements DrawableShape{
     private double height;
     AffineTransform objToWorld;
     private double zoomD;
+    private AffineTransform zoomTrans;
+    private AffineTransform objToView;
+    private Point2D.Double off;
 
     public DrawableEllipse(Shape givenShape){
         innerEllipse = givenShape;
@@ -25,13 +28,21 @@ public class DrawableEllipse implements DrawableShape{
     }
 
     @Override
-    public void onDraw(Graphics2D g2d, AffineTransform zoom) {
-        zoomD = zoom.getScaleX();
+    public void onDraw(Graphics2D g2d, AffineTransform worldToView) {
+        zoomTrans = new AffineTransform(worldToView);
+        zoomD = worldToView.getScaleX();
         objToWorld = new AffineTransform();
-        objToWorld.translate(innerEllipse.getCenter().getX(), innerEllipse.getCenter().getY());
-        objToWorld.rotate(innerEllipse.getRotation());
-        objToWorld.concatenate(zoom);
-        g2d.setTransform(objToWorld);
+        objToWorld.concatenate(new AffineTransform(1, 0, 0, 1, innerEllipse.getCenter().getX(), innerEllipse.getCenter().getY()));
+        objToWorld.concatenate(new AffineTransform(Math.cos(innerEllipse.getRotation()),Math.sin(innerEllipse.getRotation()), Math.sin(-innerEllipse.getRotation()),Math.cos(innerEllipse.getRotation()), 0, 0));
+
+        objToView = new AffineTransform();
+
+        objToView.concatenate(worldToView);
+        objToView.concatenate(objToWorld);
+
+
+
+        g2d.setTransform(objToView);
         g2d.setColor(innerEllipse.getColor());
         g2d.fillOval((int)(- width/2), (int)(- height/2), (int)(width), (int)(height));
 //        drawSelection(g2d);
@@ -40,8 +51,11 @@ public class DrawableEllipse implements DrawableShape{
     @Override
     public void drawSelection(Graphics2D g2d) {
         objToWorld = new AffineTransform();
-        objToWorld.translate(innerEllipse.getCenter().getX(), innerEllipse.getCenter().getY());
-        objToWorld.rotate(innerEllipse.getRotation());
+        off = new Point2D.Double(innerEllipse.getCenter().getX(), innerEllipse.getCenter().getY());
+        zoomTrans.transform(off, off);
+        objToWorld.concatenate(new AffineTransform(1, 0, 0, 1, off.getX(), off.getY()));
+        objToWorld.concatenate(new AffineTransform(Math.cos(innerEllipse.getRotation()),Math.sin(innerEllipse.getRotation()), Math.sin(-innerEllipse.getRotation()),Math.cos(innerEllipse.getRotation()), 0, 0));
+
         g2d.setTransform(objToWorld);
         g2d.setColor(Color.RED);
         g2d.drawOval((-5), (int)(-((height*zoomD)/2) - 20) , 10, 10);

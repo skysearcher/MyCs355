@@ -98,11 +98,11 @@ public abstract class Shape {
      */
     public abstract boolean pointInShape(Point2D.Double pt, double tolerance);
 
-    public abstract boolean hitHandle(Point2D.Double pt);
+    public abstract boolean hitHandle(Point2D.Double pt, double zoomD);
 
     public abstract TShapeEnum whatShape();
 
-    public abstract SelectPoint rotationHit(Point2D.Double pt, double tolerance);
+    public abstract SelectPoint rotationHit(Point2D.Double pt, double tolerance, double zoom);
 
 
 }

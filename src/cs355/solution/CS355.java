@@ -31,11 +31,11 @@ public class CS355 {
         GUIFunctions.refresh();
         GUIFunctions.setHScrollBarMax(2048);
         GUIFunctions.setHScrollBarMin(0);
-        GUIFunctions.setHScrollBarKnob(1024);
+        GUIFunctions.setHScrollBarKnob(512);
         GUIFunctions.setHScrollBarPosit(0);
         GUIFunctions.setVScrollBarMax(2048);
         GUIFunctions.setVScrollBarMin(0);
-        GUIFunctions.setVScrollBarKnob(1024);
+        GUIFunctions.setVScrollBarKnob(512);
         GUIFunctions.setVScrollBarPosit(0);
     }
 }

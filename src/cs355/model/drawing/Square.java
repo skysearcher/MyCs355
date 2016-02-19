@@ -69,8 +69,8 @@ public class Square extends Shape {
     }
 
     @Override
-    public boolean hitHandle(Point2D.Double pt) {
-        return pt.getY() > (-size/2) - 20 && pt.getY() < (-size/2) - 10 && pt.getX() > -5.0 && pt.getX() < 5.0;
+    public boolean hitHandle(Point2D.Double pt, double zoomD) {
+        return pt.getY() > (-(size)/2) - 20*(1/zoomD) && pt.getY() < (-(size)/2) - 10*(1/zoomD) && pt.getX() > -5.0 && pt.getX() < 5.0;
     }
 
     @Override
@@ -79,11 +79,11 @@ public class Square extends Shape {
     }
 
     @Override
-    public SelectPoint rotationHit(Point2D.Double pt, double tolerance) {
+    public SelectPoint rotationHit(Point2D.Double pt, double tolerance, double zoom) {
         if (pointInShape(pt, tolerance)) {
             return SelectPoint.Center;
         }
-        if(hitHandle(pt)) {
+        if(hitHandle(pt, zoom)) {
             return SelectPoint.Rotation;
         } else {
             return SelectPoint.None;

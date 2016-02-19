@@ -96,7 +96,7 @@ public class Ellipse extends Shape {
     }
 
     @Override
-    public boolean hitHandle(Point2D.Double pt) {
+    public boolean hitHandle(Point2D.Double pt, double zoomD) {
         return pt.getY() > (-height/2) - 20 && pt.getY() < (-height/2) - 10 && pt.getX() > -5.0 && pt.getX() < 5.0;
     }
 
@@ -106,11 +106,11 @@ public class Ellipse extends Shape {
     }
 
     @Override
-    public SelectPoint rotationHit(Point2D.Double pt, double tolerance) {
+    public SelectPoint rotationHit(Point2D.Double pt, double tolerance, double zoom) {
         if (pointInShape(pt, tolerance)) {
             return SelectPoint.Center;
         }
-        if(hitHandle(pt)) {
+        if(hitHandle(pt, zoom)) {
             return SelectPoint.Rotation;
         } else {
             return SelectPoint.None;
