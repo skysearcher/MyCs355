@@ -8,8 +8,7 @@ import cs355.model.drawing.*;
 import cs355.model.drawing.Rectangle;
 import cs355.model.drawing.Shape;
 import cs355.model.scene.CS355Scene;
-import cs355.view.MyViewRefresh;
-import javafx.scene.Camera;
+import cs355.view.MyViewRefresher;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -27,7 +26,7 @@ public class MyController implements CS355Controller{
     private Shape myShape;
     private int triangleClick;
     private Color drawColor;
-    private MyViewRefresh myView;
+    private MyViewRefresher myView;
     private Point2D.Double startPress;
     private Point2D.Double squareLeft;
     private double width;
@@ -51,9 +50,10 @@ public class MyController implements CS355Controller{
     private CameraPos myCamera;
     private double moveFactor;
     private double rotateFactor;
+    private boolean threeDing;
 
 
-    public MyController(MyModel givenModel, MyViewRefresh theView){
+    public MyController(MyModel givenModel, MyViewRefresher theView){
         screenSize = 2048;
         myView = theView;
         myMod = givenModel;
@@ -76,7 +76,9 @@ public class MyController implements CS355Controller{
         myCamera = new CameraPos();
         moveFactor = 1.0;
         rotateFactor = 0.1;
-
+        threeDing = false;
+        myView.setMyCamera(myCamera);
+        myView.setMyScene(myScene);
     }
 
     public void setAffine(){
@@ -86,8 +88,8 @@ public class MyController implements CS355Controller{
         worldToView = new AffineTransform();
         worldToView.concatenate(new AffineTransform(zoom/100, 0, 0, zoom/100, 0, 0));//Inverse scale
         worldToView.concatenate(new AffineTransform(1, 0, 0, 1, -horizontalPos, -verticalPos));//Inverse translate
-
     }
+
     @Override
     public void colorButtonHit(Color c) {
         if(c != null){
@@ -318,8 +320,12 @@ public class MyController implements CS355Controller{
 
     @Override
     public void toggle3DModelDisplay() {
-        int test = 0;
-        test++;
+        if(threeDing){
+            threeDing = false;
+        }else{
+            threeDing = true;
+        }
+
         System.out.println("Pressed 3D Model");
     }
 
@@ -338,32 +344,42 @@ public class MyController implements CS355Controller{
          */
         while (iterator.hasNext()){
             test = iterator.next();
-            switch (test){
-                case 65:
-                    myCamera.getMyPos().x += myCamera.getMyPos().x;
-                    System.out.println("Pressed A");
-                    break;
-                case 83:
-                    System.out.println("Pressed S");
-                    break;
-                case 87:
-                    System.out.println("Pressed W");
-                    break;
-                case 68:
-                    System.out.println("Pressed D");
-                    break;
-                case 81:
-                    System.out.println("Pressed Q");
-                    break;
-                case 69:
-                    System.out.println("Pressed E");
-                    break;
-                case 82:
-                    System.out.println("Pressed R");
-                    break;
-                case 70:
-                    System.out.println("Pressed F");
-                    break;
+            if(threeDing){
+                switch (test){
+                    case 65:
+                        myCamera.getMyPos().x += moveFactor;
+                        System.out.println("Pressed A");
+                        break;
+                    case 83:
+                        myCamera.getMyPos().z -= moveFactor;
+                        System.out.println("Pressed S");
+                        break;
+                    case 87:
+                        myCamera.getMyPos().z += moveFactor;
+                        System.out.println("Pressed W");
+                        break;
+                    case 68:
+                        myCamera.getMyPos().x -= moveFactor;
+                        System.out.println("Pressed D");
+                        break;
+                    case 81:
+                        myCamera.setRotation(myCamera.getRotation() + rotateFactor);
+                        System.out.println("Pressed Q");
+                        break;
+                    case 69:
+                        myCamera.setRotation(myCamera.getRotation() - rotateFactor);
+                        System.out.println("Pressed E");
+                        break;
+                    case 82:
+                        myCamera.getMyPos().y -= moveFactor;
+                        System.out.println("Pressed R");
+                        break;
+                    case 70:
+                        myCamera.getMyPos().y += moveFactor;
+                        System.out.println("Pressed F");
+                        break;
+                }
+                myView.updateMatrix();
             }
         }
 

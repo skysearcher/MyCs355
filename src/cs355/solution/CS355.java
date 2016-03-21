@@ -3,7 +3,7 @@ package cs355.solution;
 import cs355.GUIFunctions;
 import cs355.controller.MyController;
 import cs355.model.MyModel;
-import cs355.view.MyViewRefresh;
+import cs355.view.MyViewRefresher;
 
 import java.awt.*;
 
@@ -23,7 +23,7 @@ public class CS355 {
 
         // Fill in the parameters below with your controller and view.
         MyModel myMod = new MyModel();
-        MyViewRefresh myView = new MyViewRefresh(myMod);
+        MyViewRefresher myView = new MyViewRefresher(myMod);
         MyController myCont = new MyController(myMod, myView);
         myMod.addObserver(myView);
         GUIFunctions.createCS355Frame(myCont, myView);
