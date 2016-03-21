@@ -80,8 +80,8 @@ public class MyController implements CS355Controller{
         myView.setMyCamera(myCamera);
         myView.setMyScene(myScene);
         myCamera.setFov(Math.toRadians(60));
-        myCamera.setFar(100.0);
-        myCamera.setNear(0.5);
+        myCamera.setFar(1000.0);
+        myCamera.setNear(0.001);
     }
 
     public void setAffine(){

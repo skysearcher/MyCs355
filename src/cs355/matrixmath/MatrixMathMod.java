@@ -122,15 +122,24 @@ public class MatrixMathMod {
         return myPoint;
     }
 
-    public boolean passClipTest(double[] givenVec){
-        if(givenVec[0] < givenVec[3] && givenVec[0] > -givenVec[3]){
-            if(givenVec[1] < givenVec[3] && givenVec[1] > -givenVec[3]){
-                if(givenVec[2] < givenVec[3] && givenVec[2] > -givenVec[3]){
+    public boolean passClipTest(double[] givenVec, double[] givenVec2){
+        if(givenVec[0] < givenVec[3] || givenVec2[0] < givenVec2[3]){
+            if(givenVec[1] < givenVec[3] || givenVec2[1] < givenVec2[3]){
+                if(givenVec[2] < givenVec[3] || givenVec2[2] < givenVec2[3]){
+                    return passClipTestTwo(givenVec , givenVec2);
+                }
+            }
+        }
+        return false;
+    }
+    private boolean passClipTestTwo(double[] givenVec, double[] givenVec2){
+        if(givenVec[0] > -givenVec[3] || givenVec2[0] > -givenVec2[3]){
+            if(givenVec[1] > -givenVec[3] || givenVec2[1] > -givenVec2[3]){
+                if(givenVec[2] > -givenVec[3] && givenVec2[2] > -givenVec2[3]){
                     return true;
                 }
             }
         }
         return false;
     }
-
 }

@@ -23,7 +23,7 @@ import java.util.Observable;
 /**
  * Created by Joshua on 1/18/2016.
  */
-public class MyViewRefresher implements ViewRefresher{
+public class MyViewRefresher implements ViewRefresher {
     private int start;
     private MyModel myMod;
     private List<Shape> shapes;
@@ -42,7 +42,7 @@ public class MyViewRefresher implements ViewRefresher{
     private double zoomFactor;
 
 
-    public MyViewRefresher(MyModel givenModel){
+    public MyViewRefresher(MyModel givenModel) {
         myMod = givenModel;
         drawShapes = new ArrayList<>();
         shaper = new ShapeConverter();
@@ -79,7 +79,7 @@ public class MyViewRefresher implements ViewRefresher{
         this.threeDing = threeDing;
     }
 
-    public void updateMatrix(){
+    public void updateMatrix() {
 
 
         myMatrix.setAsTranslation(myCamera.getMyPos());
@@ -88,7 +88,6 @@ public class MyViewRefresher implements ViewRefresher{
         conMatrix.setAsClipMatrix(myCamera.getFov(), myCamera.getNear(), myCamera.getFar());
         myMatrix.concateMatrix(conMatrix.getMatrix());
         zoomFactor = zoom.getScaleX();
-
 
 
 //        myMatrix.setAsRotation(myCamera.getRotation());
@@ -106,42 +105,42 @@ public class MyViewRefresher implements ViewRefresher{
         this.zoom = zoom;
     }
 
-
-
-
-
-    public void setSelected(int given){
+    public void setSelected(int given) {
         selectedShape = given;
     }
-    public void unSelect(){
+
+    public void unSelect() {
         selectedShape = -1;
     }
-    public void setDrawing(Shape givenShape){
+
+    public void setDrawing(Shape givenShape) {
         shapeDrawing = shaper.convert(givenShape);
         amDrawing = 1;
     }
-    public void endDrawing(){
+
+    public void endDrawing() {
         amDrawing = 0;
     }
+
     @Override
     public void refreshView(Graphics2D g2d) {
         start++;
-        for(int i = 0; i < drawShapes.size(); i++){
+        for (int i = 0; i < drawShapes.size(); i++) {
             drawShapes.get(i).onDraw(g2d, zoom);
         }
-        if(selectedShape > -1){
+        if (selectedShape > -1) {
             drawShapes.get(selectedShape).drawSelection(g2d);
         }
         //GUIFunctions.printf("Refresh " + start,0);
         //Draw list of Drawables
-        if(amDrawing == 1){   //are you drawing?
+        if (amDrawing == 1) {   //are you drawing?
             shapeDrawing.onDraw(g2d, zoom);
         }
         //TODO finish the drawing
-        if(threeDing){
+        if (threeDing) {
             List<Instance> instances = myScene.instances();
             Instance curInstance;
-            for (int i = 0; i < instances.size(); i++){
+            for (int i = 0; i < instances.size(); i++) {
                 curInstance = instances.get(i);
                 WireFrame frame = curInstance.getModel();
                 List<Line3D> lines = frame.getLines();
@@ -154,9 +153,9 @@ public class MyViewRefresher implements ViewRefresher{
                 objToWorld.setAsRotation(Math.toRadians(curInstance.getRotAngle()));
                 conMatrix.setAsTranslation(curInstance.getPosition());
                 objToWorld.concateMatrix(conMatrix.getMatrix());
-                for(int j = 0; j < lines.size(); j++){
+                for (int j = 0; j < lines.size(); j++) {
                     curLine = lines.get(j);
-                    myPointOne[0] = curLine.start.x ;
+                    myPointOne[0] = curLine.start.x;
                     myPointOne[1] = curLine.start.y;
                     myPointOne[2] = curLine.start.z;
                     myPointOne[3] = 1;
@@ -168,12 +167,13 @@ public class MyViewRefresher implements ViewRefresher{
                     myPointTwo = objToWorld.multiplyVec(myPointTwo);
                     myPointOne = myMatrix.multiplyVec(myPointOne);
                     myPointTwo = myMatrix.multiplyVec(myPointTwo);
-                    if(myMatrix.passClipTest(myPointOne) || myMatrix.passClipTest(myPointTwo)){
+                    if (myMatrix.passClipTest(myPointOne, myPointTwo)) {
                         myPointOne = myMatrix.homogenDiv(myPointOne);
                         myPointTwo = myMatrix.homogenDiv(myPointTwo);
                         pointOne = myMatrix.toScreen(myPointOne);
                         pointTwo = myMatrix.toScreen(myPointTwo);
-                        g2d.drawLine((int)(zoom.getTranslateX() + (pointOne.x * zoomFactor)), (int)(zoom.getTranslateY() + (pointOne.y * zoomFactor)), (int)(zoom.getTranslateX() + (pointTwo.x * zoomFactor)), (int)(zoom.getTranslateY() + (pointTwo.y * zoomFactor)));
+                        g2d.drawLine((int) (zoom.getTranslateX() + (pointOne.x * zoomFactor)), (int) (zoom.getTranslateY() + (pointOne.y * zoomFactor)), (int) (zoom.getTranslateX() + (pointTwo.x * zoomFactor)), (int) (zoom.getTranslateY() + (pointTwo.y * zoomFactor)));
+
                     }
                 }
             }
@@ -185,7 +185,7 @@ public class MyViewRefresher implements ViewRefresher{
     public void update(Observable o, Object arg) {
         drawShapes.clear();
         shapes = myMod.getShapes();
-        for(Shape s: shapes){
+        for (Shape s : shapes) {
             drawShapes.add(shaper.convert(s));
         }
         GUIFunctions.refresh();
