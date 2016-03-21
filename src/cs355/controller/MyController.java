@@ -230,6 +230,8 @@ public class MyController implements CS355Controller{
                 setBars(screenSize/16, (int)horizontalPos, screenSize/16, (int)verticalPos);
                 break;
         }
+        myView.updateMatrix();
+        GUIFunctions.refresh();
     }
 
     @Override
@@ -295,6 +297,8 @@ public class MyController implements CS355Controller{
                 setBars(screenSize/16, (int)horizontalPos, screenSize/16, (int)verticalPos);
                 break;
         }
+        myView.updateMatrix();
+        GUIFunctions.refresh();
     }
 
     @Override

@@ -136,6 +136,7 @@ public class MyViewRefresher implements ViewRefresher {
         if (amDrawing == 1) {   //are you drawing?
             shapeDrawing.onDraw(g2d, zoom);
         }
+        g2d.setTransform(zoom);
         //TODO finish the drawing
         if (threeDing) {
             List<Instance> instances = myScene.instances();
@@ -172,7 +173,8 @@ public class MyViewRefresher implements ViewRefresher {
                         myPointTwo = myMatrix.homogenDiv(myPointTwo);
                         pointOne = myMatrix.toScreen(myPointOne);
                         pointTwo = myMatrix.toScreen(myPointTwo);
-                        g2d.drawLine((int) (zoom.getTranslateX() + (pointOne.x * zoomFactor)), (int) (zoom.getTranslateY() + (pointOne.y * zoomFactor)), (int) (zoom.getTranslateX() + (pointTwo.x * zoomFactor)), (int) (zoom.getTranslateY() + (pointTwo.y * zoomFactor)));
+//                        g2d.drawLine((int) (zoom.getTranslateX() + (pointOne.x * zoomFactor)), (int) (zoom.getTranslateY() + (pointOne.y * zoomFactor)), (int) (zoom.getTranslateX() + (pointTwo.x * zoomFactor)), (int) (zoom.getTranslateY() + (pointTwo.y * zoomFactor)));
+                        g2d.drawLine((int)(pointOne.x), (int) (pointOne.y), (int)(pointTwo.x), (int)(pointTwo.y));
 
                     }
                 }
