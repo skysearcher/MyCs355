@@ -7,7 +7,9 @@ import cs355.model.drawable.SquareCircle;
 import cs355.model.drawing.*;
 import cs355.model.drawing.Rectangle;
 import cs355.model.drawing.Shape;
+import cs355.model.scene.CS355Scene;
 import cs355.view.MyViewRefresh;
+import javafx.scene.Camera;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -45,7 +47,10 @@ public class MyController implements CS355Controller{
     private AffineTransform viewToWorld;
     private int screenSize;
     private AffineTransform worldToView;
-
+    private CS355Scene myScene;
+    private CameraPos myCamera;
+    private double moveFactor;
+    private double rotateFactor;
 
 
     public MyController(MyModel givenModel, MyViewRefresh theView){
@@ -59,6 +64,7 @@ public class MyController implements CS355Controller{
         squareLeft = new Point2D.Double(0, 0);
         circConvert = new SquareCircle();
         ellipseConvert = new RectangleEllipse();
+        myScene = new CS355Scene();
         selectedIndex = -1;
         whatSelected = SelectPoint.None;
         tolerance = 8;
@@ -67,15 +73,16 @@ public class MyController implements CS355Controller{
         verticalPos = 0;
         setAffine();
         myView.setZoom(worldToView);
+        myCamera = new CameraPos();
+        moveFactor = 1.0;
+        rotateFactor = 0.1;
+
     }
 
     public void setAffine(){
         viewToWorld = new AffineTransform();
         viewToWorld.concatenate(new AffineTransform(1, 0, 0, 1, horizontalPos, verticalPos));//translate
         viewToWorld.concatenate(new AffineTransform(1/(zoom/100), 0, 0, 1/(zoom/100), 0, 0));//Scale
-
-
-
         worldToView = new AffineTransform();
         worldToView.concatenate(new AffineTransform(zoom/100, 0, 0, zoom/100, 0, 0));//Inverse scale
         worldToView.concatenate(new AffineTransform(1, 0, 0, 1, -horizontalPos, -verticalPos));//Inverse translate
@@ -305,16 +312,59 @@ public class MyController implements CS355Controller{
 
     @Override
     public void openScene(File file) {
-
+        myScene.open(file);
     }
 
     @Override
     public void toggle3DModelDisplay() {
-
+        int test = 0;
+        test++;
+        System.out.println("Pressed 3D Model");
     }
 
     @Override
     public void keyPressed(Iterator<Integer> iterator) {
+        int test = 0;
+        /**TODO BUTTONS!!!
+         * A = 65
+         * S = 83
+         * W = 87
+         * D = 68
+         * Q = 81
+         * E = 69
+         * R = 82
+         * F = 70
+         */
+        while (iterator.hasNext()){
+            test = iterator.next();
+            switch (test){
+                case 65:
+                    myCamera.getMyPos().x += myCamera.getMyPos().x;
+                    System.out.println("Pressed A");
+                    break;
+                case 83:
+                    System.out.println("Pressed S");
+                    break;
+                case 87:
+                    System.out.println("Pressed W");
+                    break;
+                case 68:
+                    System.out.println("Pressed D");
+                    break;
+                case 81:
+                    System.out.println("Pressed Q");
+                    break;
+                case 69:
+                    System.out.println("Pressed E");
+                    break;
+                case 82:
+                    System.out.println("Pressed R");
+                    break;
+                case 70:
+                    System.out.println("Pressed F");
+                    break;
+            }
+        }
 
     }
 
