@@ -313,6 +313,7 @@ public class MyController implements CS355Controller{
     @Override
     public void openScene(File file) {
         myScene.open(file);
+        int test = 0;
     }
 
     @Override
