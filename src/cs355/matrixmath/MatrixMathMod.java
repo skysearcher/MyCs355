@@ -57,9 +57,9 @@ public class MatrixMathMod {
             }
         }
         matrix[0][0] = Math.cos(rotation);
-        matrix[0][2] = Math.sin(rotation);
+        matrix[0][2] = -Math.sin(rotation);
         matrix[1][1] = 1;
-        matrix[2][0] = -Math.sin(rotation);
+        matrix[2][0] = Math.sin(rotation);
         matrix[2][2] = Math.cos(rotation);
         matrix[3][3] = 1;
     }
@@ -121,6 +121,7 @@ public class MatrixMathMod {
         myPoint.y = (givenVec[1] * (-height/2)) + (height/2);
         return myPoint;
     }
+
     public boolean passClipTest(double[] givenVec){
         if(givenVec[0] < givenVec[3] && givenVec[0] > -givenVec[3]){
             if(givenVec[1] < givenVec[3] && givenVec[1] > -givenVec[3]){

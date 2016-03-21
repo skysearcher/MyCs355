@@ -49,7 +49,9 @@ public class CameraPos {
     }
 
     public void setMyPos(Point3D myPos) {
-        this.myPos = myPos;
+        this.myPos.x = myPos.x;
+        this.myPos.y = myPos.y;
+        this.myPos.z = myPos.z;
     }
 
     public double getRotation() {

@@ -38,6 +38,8 @@ public class MyViewRefresher implements ViewRefresher{
     private CS355Scene myScene;
     private MatrixMathMod myMatrix;
     private MatrixMathMod conMatrix;
+    private MatrixMathMod objToWorld;
+    private double zoomFactor;
 
 
     public MyViewRefresher(MyModel givenModel){
@@ -50,6 +52,7 @@ public class MyViewRefresher implements ViewRefresher{
         zoom = new AffineTransform();
         myMatrix = new MatrixMathMod();
         conMatrix = new MatrixMathMod();
+        objToWorld = new MatrixMathMod();
     }
 
     public CS355Scene getMyScene() {
@@ -77,11 +80,22 @@ public class MyViewRefresher implements ViewRefresher{
     }
 
     public void updateMatrix(){
-        myMatrix.setAsRotation(myCamera.getRotation());
-        conMatrix.setAsTranslation(myCamera.getMyPos());
+
+
+        myMatrix.setAsTranslation(myCamera.getMyPos());
+        conMatrix.setAsRotation(myCamera.getRotation());
         myMatrix.concateMatrix(conMatrix.getMatrix());
         conMatrix.setAsClipMatrix(myCamera.getFov(), myCamera.getNear(), myCamera.getFar());
         myMatrix.concateMatrix(conMatrix.getMatrix());
+        zoomFactor = zoom.getScaleX();
+
+
+
+//        myMatrix.setAsRotation(myCamera.getRotation());
+//        conMatrix.setAsTranslation(myCamera.getMyPos());
+//        myMatrix.concateMatrix(conMatrix.getMatrix());
+//        conMatrix.setAsClipMatrix(myCamera.getFov(), myCamera.getNear(), myCamera.getFar());
+//        myMatrix.concateMatrix(conMatrix.getMatrix());
     }
 
     public AffineTransform getZoom() {
@@ -137,9 +151,12 @@ public class MyViewRefresher implements ViewRefresher{
                 Point2D.Double pointOne;
                 Point2D.Double pointTwo;
                 g2d.setPaint(curInstance.getColor());
+                objToWorld.setAsRotation(Math.toRadians(curInstance.getRotAngle()));
+                conMatrix.setAsTranslation(curInstance.getPosition());
+                objToWorld.concateMatrix(conMatrix.getMatrix());
                 for(int j = 0; j < lines.size(); j++){
                     curLine = lines.get(j);
-                    myPointOne[0] = curLine.start.x;
+                    myPointOne[0] = curLine.start.x ;
                     myPointOne[1] = curLine.start.y;
                     myPointOne[2] = curLine.start.z;
                     myPointOne[3] = 1;
@@ -147,6 +164,8 @@ public class MyViewRefresher implements ViewRefresher{
                     myPointTwo[1] = curLine.end.y;
                     myPointTwo[2] = curLine.end.z;
                     myPointTwo[3] = 1;
+                    myPointOne = objToWorld.multiplyVec(myPointOne);
+                    myPointTwo = objToWorld.multiplyVec(myPointTwo);
                     myPointOne = myMatrix.multiplyVec(myPointOne);
                     myPointTwo = myMatrix.multiplyVec(myPointTwo);
                     if(myMatrix.passClipTest(myPointOne) || myMatrix.passClipTest(myPointTwo)){
@@ -154,7 +173,7 @@ public class MyViewRefresher implements ViewRefresher{
                         myPointTwo = myMatrix.homogenDiv(myPointTwo);
                         pointOne = myMatrix.toScreen(myPointOne);
                         pointTwo = myMatrix.toScreen(myPointTwo);
-                        g2d.drawLine((int)pointOne.x, (int)pointOne.y, (int)pointTwo.x, (int)pointTwo.y);
+                        g2d.drawLine((int)(zoom.getTranslateX() + (pointOne.x * zoomFactor)), (int)(zoom.getTranslateY() + (pointOne.y * zoomFactor)), (int)(zoom.getTranslateX() + (pointTwo.x * zoomFactor)), (int)(zoom.getTranslateY() + (pointTwo.y * zoomFactor)));
                     }
                 }
             }

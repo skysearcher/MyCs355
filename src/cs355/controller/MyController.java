@@ -79,6 +79,9 @@ public class MyController implements CS355Controller{
         threeDing = false;
         myView.setMyCamera(myCamera);
         myView.setMyScene(myScene);
+        myCamera.setFov(Math.toRadians(60));
+        myCamera.setFar(100.0);
+        myCamera.setNear(0.5);
     }
 
     public void setAffine(){
@@ -315,17 +318,24 @@ public class MyController implements CS355Controller{
     @Override
     public void openScene(File file) {
         myScene.open(file);
-        int test = 0;
+        myCamera.setMyPos(myScene.getCameraPosition());
+        myCamera.setRotation(myScene.getCameraRotation());
+        myView.updateMatrix();
+        GUIFunctions.refresh();
     }
 
     @Override
     public void toggle3DModelDisplay() {
+        myView.updateMatrix();
         if(threeDing){
             threeDing = false;
         }else{
             threeDing = true;
         }
-        System.out.println("Pressed 3D Model");
+        myView.setThreeDing(threeDing);
+        myView.updateMatrix();
+        GUIFunctions.refresh();
+        System.out.println("Pressed 3D Model " + threeDing);
     }
 
     @Override
@@ -341,44 +351,56 @@ public class MyController implements CS355Controller{
          * R = 82
          * F = 70
          */
+//        System.out.println(iterator.next());
         while (iterator.hasNext()){
             test = iterator.next();
             if(threeDing){
+                double xAdd;
+                double zAdd;
                 switch (test){
-                    case 65:
-                        myCamera.getMyPos().x += moveFactor;
-                        System.out.println("Pressed A");
+                    case 65:    //A
+                        xAdd = (moveFactor) * Math.cos(myCamera.getRotation());
+                        zAdd = (moveFactor) * Math.sin(myCamera.getRotation());
+                        myCamera.getMyPos().x += xAdd;
+                        myCamera.getMyPos().z -= zAdd;
                         break;
-                    case 83:
-                        myCamera.getMyPos().z -= moveFactor;
-                        System.out.println("Pressed S");
+                    case 83:    //S
+                        xAdd = (moveFactor) * Math.sin(myCamera.getRotation());
+                        zAdd = (moveFactor) * Math.cos(myCamera.getRotation());
+                        myCamera.getMyPos().x += xAdd;
+                        myCamera.getMyPos().z += zAdd;
                         break;
-                    case 87:
-                        myCamera.getMyPos().z += moveFactor;
-                        System.out.println("Pressed W");
+                    case 87:    //W
+                        xAdd = (moveFactor) * Math.sin(myCamera.getRotation());
+                        zAdd = (moveFactor) * Math.cos(myCamera.getRotation());
+                        myCamera.getMyPos().x -= xAdd;
+                        myCamera.getMyPos().z -= zAdd;
                         break;
-                    case 68:
-                        myCamera.getMyPos().x -= moveFactor;
-                        System.out.println("Pressed D");
+                    case 68:    //D
+                        xAdd = (moveFactor) * Math.cos(myCamera.getRotation());
+                        zAdd = (moveFactor) * Math.sin(myCamera.getRotation());
+                        myCamera.getMyPos().x -= xAdd;
+                        myCamera.getMyPos().z += zAdd;
                         break;
                     case 81:
-                        myCamera.setRotation(myCamera.getRotation() + rotateFactor);
-                        System.out.println("Pressed Q");
+                        myCamera.setRotation(myCamera.getRotation() - rotateFactor);
                         break;
                     case 69:
-                        myCamera.setRotation(myCamera.getRotation() - rotateFactor);
-                        System.out.println("Pressed E");
+                        myCamera.setRotation(myCamera.getRotation() + rotateFactor);
                         break;
                     case 82:
                         myCamera.getMyPos().y -= moveFactor;
-                        System.out.println("Pressed R");
                         break;
                     case 70:
                         myCamera.getMyPos().y += moveFactor;
-                        System.out.println("Pressed F");
+                        break;
+                    case 72:
+                        myCamera.setMyPos(myScene.getCameraPosition());
+                        myCamera.setRotation(myScene.getCameraRotation());
                         break;
                 }
                 myView.updateMatrix();
+                GUIFunctions.refresh();
             }
         }
 
