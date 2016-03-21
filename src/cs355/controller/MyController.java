@@ -323,6 +323,7 @@ public class MyController implements CS355Controller{
     public void openScene(File file) {
         myScene.open(file);
         myCamera.setMyPos(myScene.getCameraPosition());
+        myCamera.getMyPos().y -= 5;
         myCamera.setRotation(myScene.getCameraRotation());
         myView.updateMatrix();
         GUIFunctions.refresh();
@@ -400,6 +401,7 @@ public class MyController implements CS355Controller{
                         break;
                     case 72:
                         myCamera.setMyPos(myScene.getCameraPosition());
+                        myCamera.getMyPos().y -= 5;
                         myCamera.setRotation(myScene.getCameraRotation());
                         break;
                 }
