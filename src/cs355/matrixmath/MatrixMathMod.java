@@ -109,7 +109,7 @@ public class MatrixMathMod {
         matrix = matrixOne;
     }
     public double[] homogenDiv(double[] givenVec){
-        double[] divide = new double[3];
+        double[] divide = new double[4];
         divide[0] = givenVec[0]/givenVec[3];
         divide[1] = givenVec[1]/givenVec[3];
         divide[2] = 1;
@@ -120,6 +120,16 @@ public class MatrixMathMod {
         myPoint.x = (givenVec[0] * (width/2)) + (width/2);
         myPoint.y = (givenVec[1] * (-height/2)) + (height/2);
         return myPoint;
+    }
+    public boolean passClipTest(double[] givenVec){
+        if(givenVec[0] < givenVec[3] && givenVec[0] > -givenVec[3]){
+            if(givenVec[1] < givenVec[3] && givenVec[1] > -givenVec[3]){
+                if(givenVec[2] < givenVec[3] && givenVec[2] > -givenVec[3]){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

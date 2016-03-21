@@ -325,7 +325,6 @@ public class MyController implements CS355Controller{
         }else{
             threeDing = true;
         }
-
         System.out.println("Pressed 3D Model");
     }
 

@@ -6,11 +6,16 @@ import cs355.matrixmath.MatrixMathMod;
 import cs355.model.MyModel;
 import cs355.model.drawable.DrawableShape;
 import cs355.model.drawable.ShapeConverter;
+import cs355.model.drawing.Line;
 import cs355.model.drawing.Shape;
 import cs355.model.scene.CS355Scene;
+import cs355.model.scene.Instance;
+import cs355.model.scene.Line3D;
+import cs355.model.scene.WireFrame;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -120,7 +125,39 @@ public class MyViewRefresher implements ViewRefresher{
         }
         //TODO finish the drawing
         if(threeDing){
-            myScene.instances();
+            List<Instance> instances = myScene.instances();
+            Instance curInstance;
+            for (int i = 0; i < instances.size(); i++){
+                curInstance = instances.get(i);
+                WireFrame frame = curInstance.getModel();
+                List<Line3D> lines = frame.getLines();
+                Line3D curLine;
+                double[] myPointOne = new double[4];
+                double[] myPointTwo = new double[4];
+                Point2D.Double pointOne;
+                Point2D.Double pointTwo;
+                g2d.setPaint(curInstance.getColor());
+                for(int j = 0; j < lines.size(); j++){
+                    curLine = lines.get(j);
+                    myPointOne[0] = curLine.start.x;
+                    myPointOne[1] = curLine.start.y;
+                    myPointOne[2] = curLine.start.z;
+                    myPointOne[3] = 1;
+                    myPointTwo[0] = curLine.end.x;
+                    myPointTwo[1] = curLine.end.y;
+                    myPointTwo[2] = curLine.end.z;
+                    myPointTwo[3] = 1;
+                    myPointOne = myMatrix.multiplyVec(myPointOne);
+                    myPointTwo = myMatrix.multiplyVec(myPointTwo);
+                    if(myMatrix.passClipTest(myPointOne) || myMatrix.passClipTest(myPointTwo)){
+                        myPointOne = myMatrix.homogenDiv(myPointOne);
+                        myPointTwo = myMatrix.homogenDiv(myPointTwo);
+                        pointOne = myMatrix.toScreen(myPointOne);
+                        pointTwo = myMatrix.toScreen(myPointTwo);
+                        g2d.drawLine((int)pointOne.x, (int)pointOne.y, (int)pointTwo.x, (int)pointTwo.y);
+                    }
+                }
+            }
         }
 
     }
