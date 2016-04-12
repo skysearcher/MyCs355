@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created by Joshua on 4/12/2016.
@@ -25,6 +27,7 @@ public class MyImage extends CS355Image{
         return myImage;
     }
 
+    //TODO: work on the Edge Detection
     @Override
     public void edgeDetection() {
 
@@ -63,18 +66,6 @@ public class MyImage extends CS355Image{
                     getPixel(i, j + 1, my8);
 //                    getPixel(i + 1, j + 1, my9);
                 }
-                if(i == 0){
-
-                }
-                if(i == getWidth() - 1){
-
-                }
-                if(j == 0){
-
-                }
-                if(j == getHeight() - 1){
-
-                }
                 myPixelAdd[0] = ((my2[0] * -1) - my4[0] + (my5[0] * 6) - my6[0] - my8[0])/2;
                 if(myPixelAdd[0] < 0){
                     myPixelAdd[0] = 0;
@@ -101,7 +92,7 @@ public class MyImage extends CS355Image{
         }
         setPixels(mySecond);
     }
-
+    //TODO: work on the median blur
     @Override
     public void medianBlur() {
         CS355Image mySecond = new MyImage();
@@ -115,7 +106,10 @@ public class MyImage extends CS355Image{
         int[] my7 = new int[3];
         int[] my8 = new int[3];
         int[] my9 = new int[3];
-        int[] myPixelAdd = new int[3];
+        int[] myChart = new int[9];
+        int[][] myChartPixel = new int[9][3];
+        int[] myPixelMedian = new int[3];
+        int changeIndex = 0;
         for(int i = 0; i < getWidth(); i++){
             for(int j = 0; j < getHeight(); j++){
                 getPixel(i, j, my1);
@@ -125,32 +119,64 @@ public class MyImage extends CS355Image{
         for(int i = 0; i < getWidth(); i++){
             for(int j = 0; j < getHeight(); j++){
                 if(i > 0 && i < getWidth() - 1 && j > 0 && j < getHeight() - 1){ //middle
-                    getPixel(i - 1, j - 1, my1);
-                    getPixel(i, j - 1, my2);
-                    getPixel(i + 1, j - 1, my3);
-                    getPixel(i - 1, j, my4);
-                    getPixel(i, j, my5);
-                    getPixel(i + 1, j, my6);
-                    getPixel(i - 1, j + 1, my7);
-                    getPixel(i, j + 1, my8);
-                    getPixel(i + 1, j + 1, my9);
-                }
-                if(i == 0){
+                    getPixel(i - 1, j - 1, myChartPixel[0]);
+                    getPixel(i, j - 1, myChartPixel[1]);
+                    getPixel(i + 1, j - 1, myChartPixel[2]);
+                    getPixel(i - 1, j, myChartPixel[3]);
+                    getPixel(i, j, myChartPixel[4]);
+                    getPixel(i + 1, j, myChartPixel[5]);
+                    getPixel(i - 1, j + 1, myChartPixel[6]);
+                    getPixel(i, j + 1, myChartPixel[7]);
+                    getPixel(i + 1, j + 1, myChartPixel[8]);
 
-                }
-                if(i == getWidth() - 1){
+                    myChart[0] = myChartPixel[0][0];
+                    myChart[1] = myChartPixel[1][0];
+                    myChart[2] = myChartPixel[2][0];
+                    myChart[3] = myChartPixel[3][0];
+                    myChart[4] = myChartPixel[4][0];
+                    myChart[5] = myChartPixel[5][0];
+                    myChart[6] = myChartPixel[6][0];
+                    myChart[7] = myChartPixel[7][0];
+                    myChart[8] = myChartPixel[8][0];
 
-                }
-                if(j == 0){
+                    Arrays.sort(myChart);
 
-                }
-                if(j == getHeight() - 1){
+                    myPixelMedian[0] = myChart[4];
 
+                    myChart[0] = myChartPixel[0][1];
+                    myChart[1] = myChartPixel[1][1];
+                    myChart[2] = myChartPixel[2][1];
+                    myChart[3] = myChartPixel[3][1];
+                    myChart[4] = myChartPixel[4][1];
+                    myChart[5] = myChartPixel[5][1];
+                    myChart[6] = myChartPixel[6][1];
+                    myChart[7] = myChartPixel[7][1];
+                    myChart[8] = myChartPixel[8][1];
+
+                    Arrays.sort(myChart);
+
+                    myPixelMedian[1] = myChart[4];
+
+                    myChart[0] = myChartPixel[0][2];
+                    myChart[1] = myChartPixel[1][2];
+                    myChart[2] = myChartPixel[2][2];
+                    myChart[3] = myChartPixel[3][2];
+                    myChart[4] = myChartPixel[4][2];
+                    myChart[5] = myChartPixel[5][2];
+                    myChart[6] = myChartPixel[6][2];
+                    myChart[7] = myChartPixel[7][2];
+                    myChart[8] = myChartPixel[8][2];
+
+                    Arrays.sort(myChart);
+
+                    myPixelMedian[2] = myChart[4];
+
+                    for(int k = 0; k < 9; k++){
+
+                    }
+
+                    mySecond.setPixel(i, j, myChartPixel[changeIndex]);
                 }
-                myPixelAdd[0] = (my1[0] + my2[0] + my3[0] + my4[0] + my5[0] + my6[0] + my7[0] + my8[0] + my9[0])/9;
-                myPixelAdd[1] = (my1[1] + my2[1] + my3[1] + my4[1] + my5[1] + my6[1] + my7[1] + my8[1] + my9[1])/9;
-                myPixelAdd[2] = (my1[2] + my2[2] + my3[2] + my4[2] + my5[2] + my6[2] + my7[2] + my8[2] + my9[2])/9;
-                mySecond.setPixel(i, j, myPixelAdd);
             }
         }
         setPixels(mySecond);
