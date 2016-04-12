@@ -97,23 +97,17 @@ public class MyImage extends CS355Image{
     public void medianBlur() {
         CS355Image mySecond = new MyImage();
         mySecond.setPixels(this);
-        int[] my1 = new int[3];
-        int[] my2 = new int[3];
-        int[] my3 = new int[3];
-        int[] my4 = new int[3];
-        int[] my5 = new int[3];
-        int[] my6 = new int[3];
-        int[] my7 = new int[3];
-        int[] my8 = new int[3];
-        int[] my9 = new int[3];
+        int[] transfer = new int[3];
         int[] myChart = new int[9];
         int[][] myChartPixel = new int[9][3];
         int[] myPixelMedian = new int[3];
         int changeIndex = 0;
+        double distance = 0;
+        double testD = 0;
         for(int i = 0; i < getWidth(); i++){
             for(int j = 0; j < getHeight(); j++){
-                getPixel(i, j, my1);
-                mySecond.setPixel(i, j , my1);
+                getPixel(i, j, transfer);
+                mySecond.setPixel(i, j , transfer);
             }
         }
         for(int i = 0; i < getWidth(); i++){
@@ -171,8 +165,13 @@ public class MyImage extends CS355Image{
 
                     myPixelMedian[2] = myChart[4];
 
+                    distance = Double.MAX_VALUE;
                     for(int k = 0; k < 9; k++){
-
+                        testD = Math.sqrt(Math.pow(myPixelMedian[0] - myChartPixel[k][0], 2) + Math.pow(myPixelMedian[0] - myChartPixel[k][0], 2) + Math.pow(myPixelMedian[0] - myChartPixel[k][0], 2));
+                        if(testD < distance){
+                            distance = testD;
+                            changeIndex = k;
+                        }
                     }
 
                     mySecond.setPixel(i, j, myChartPixel[changeIndex]);
