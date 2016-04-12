@@ -262,6 +262,12 @@ public class MyImage extends CS355Image{
                 getPixel(i, j, myPixel);
                 Color.RGBtoHSB(myPixel[0], myPixel[1], myPixel[2], myFloats);
                 myFloats[2] += colorChange;
+                if(myFloats[2] < 0){
+                    myFloats[2] = 0;
+                }
+                if(myFloats[2] > 1){
+                    myFloats[2] = 1;
+                }
 
                 myColor = Color.getHSBColor(myFloats[0], myFloats[1], myFloats[2]);
                 myPixel[0] = myColor.getRed();
