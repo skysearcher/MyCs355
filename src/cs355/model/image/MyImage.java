@@ -32,29 +32,182 @@ public class MyImage extends CS355Image{
 
     @Override
     public void sharpen() {
+        CS355Image mySecond = new MyImage();
+        mySecond.setPixels(this);
+        int[] my1 = new int[3];
+        int[] my2 = new int[3];
+        int[] my3 = new int[3];
+        int[] my4 = new int[3];
+        int[] my5 = new int[3];
+        int[] my6 = new int[3];
+        int[] my7 = new int[3];
+        int[] my8 = new int[3];
+        int[] my9 = new int[3];
+        int[] myPixelAdd = new int[3];
+        for(int i = 0; i < getWidth(); i++){
+            for(int j = 0; j < getHeight(); j++){
+                getPixel(i, j, my1);
+                mySecond.setPixel(i, j , my1);
+            }
+        }
+        for(int i = 0; i < getWidth(); i++){
+            for(int j = 0; j < getHeight(); j++){
+                if(i > 0 && i < getWidth() - 1 && j > 0 && j < getHeight() - 1){ //middle
+//                    getPixel(i - 1, j - 1, my1);
+                    getPixel(i, j - 1, my2);
+//                    getPixel(i + 1, j - 1, my3);
+                    getPixel(i - 1, j, my4);
+                    getPixel(i, j, my5);
+                    getPixel(i + 1, j, my6);
+//                    getPixel(i - 1, j + 1, my7);
+                    getPixel(i, j + 1, my8);
+//                    getPixel(i + 1, j + 1, my9);
+                }
+                if(i == 0){
 
+                }
+                if(i == getWidth() - 1){
+
+                }
+                if(j == 0){
+
+                }
+                if(j == getHeight() - 1){
+
+                }
+                myPixelAdd[0] = ((my2[0] * -1) - my4[0] + (my5[0] * 6) - my6[0] - my8[0])/2;
+                if(myPixelAdd[0] < 0){
+                    myPixelAdd[0] = 0;
+                }
+                if(myPixelAdd[0] > 255){
+                    myPixelAdd[0] = 255;
+                }
+                myPixelAdd[1] = ((my2[0] * -1) - my4[0] + (my5[0] * 6) - my6[0] - my8[0])/2;
+                if(myPixelAdd[1] < 0){
+                    myPixelAdd[1] = 0;
+                }
+                if(myPixelAdd[1] > 255){
+                    myPixelAdd[1] = 255;
+                }
+                myPixelAdd[2] = ((my2[0] * -1) - my4[0] + (my5[0] * 6) - my6[0] - my8[0])/2;
+                if(myPixelAdd[2] < 0){
+                    myPixelAdd[2] = 0;
+                }
+                if(myPixelAdd[2] > 255){
+                    myPixelAdd[2] = 255;
+                }
+                mySecond.setPixel(i, j, myPixelAdd);
+            }
+        }
+        setPixels(mySecond);
     }
 
     @Override
     public void medianBlur() {
+        CS355Image mySecond = new MyImage();
+        mySecond.setPixels(this);
+        int[] my1 = new int[3];
+        int[] my2 = new int[3];
+        int[] my3 = new int[3];
+        int[] my4 = new int[3];
+        int[] my5 = new int[3];
+        int[] my6 = new int[3];
+        int[] my7 = new int[3];
+        int[] my8 = new int[3];
+        int[] my9 = new int[3];
+        int[] myPixelAdd = new int[3];
+        for(int i = 0; i < getWidth(); i++){
+            for(int j = 0; j < getHeight(); j++){
+                getPixel(i, j, my1);
+                mySecond.setPixel(i, j , my1);
+            }
+        }
+        for(int i = 0; i < getWidth(); i++){
+            for(int j = 0; j < getHeight(); j++){
+                if(i > 0 && i < getWidth() - 1 && j > 0 && j < getHeight() - 1){ //middle
+                    getPixel(i - 1, j - 1, my1);
+                    getPixel(i, j - 1, my2);
+                    getPixel(i + 1, j - 1, my3);
+                    getPixel(i - 1, j, my4);
+                    getPixel(i, j, my5);
+                    getPixel(i + 1, j, my6);
+                    getPixel(i - 1, j + 1, my7);
+                    getPixel(i, j + 1, my8);
+                    getPixel(i + 1, j + 1, my9);
+                }
+                if(i == 0){
 
+                }
+                if(i == getWidth() - 1){
+
+                }
+                if(j == 0){
+
+                }
+                if(j == getHeight() - 1){
+
+                }
+                myPixelAdd[0] = (my1[0] + my2[0] + my3[0] + my4[0] + my5[0] + my6[0] + my7[0] + my8[0] + my9[0])/9;
+                myPixelAdd[1] = (my1[1] + my2[1] + my3[1] + my4[1] + my5[1] + my6[1] + my7[1] + my8[1] + my9[1])/9;
+                myPixelAdd[2] = (my1[2] + my2[2] + my3[2] + my4[2] + my5[2] + my6[2] + my7[2] + my8[2] + my9[2])/9;
+                mySecond.setPixel(i, j, myPixelAdd);
+            }
+        }
+        setPixels(mySecond);
     }
 
     @Override
     public void uniformBlur() {
         CS355Image mySecond = new MyImage();
-        int[] myPixel = new int[3];
+        mySecond.setPixels(this);
+        int[] my1 = new int[3];
+        int[] my2 = new int[3];
+        int[] my3 = new int[3];
+        int[] my4 = new int[3];
+        int[] my5 = new int[3];
+        int[] my6 = new int[3];
+        int[] my7 = new int[3];
+        int[] my8 = new int[3];
+        int[] my9 = new int[3];
+        int[] myPixelAdd = new int[3];
         for(int i = 0; i < getWidth(); i++){
             for(int j = 0; j < getHeight(); j++){
-                getPixel(i, j, myPixel);
-                mySecond.setPixel(i, j , myPixel);
+                getPixel(i, j, my1);
+                mySecond.setPixel(i, j , my1);
             }
         }
         for(int i = 0; i < getWidth(); i++){
             for(int j = 0; j < getHeight(); j++){
+                if(i > 0 && i < getWidth() - 1 && j > 0 && j < getHeight() - 1){ //middle
+                    getPixel(i - 1, j - 1, my1);
+                    getPixel(i, j - 1, my2);
+                    getPixel(i + 1, j - 1, my3);
+                    getPixel(i - 1, j, my4);
+                    getPixel(i, j, my5);
+                    getPixel(i + 1, j, my6);
+                    getPixel(i - 1, j + 1, my7);
+                    getPixel(i, j + 1, my8);
+                    getPixel(i + 1, j + 1, my9);
+                }
+                if(i == 0){
 
+                }
+                if(i == getWidth() - 1){
+
+                }
+                if(j == 0){
+
+                }
+                if(j == getHeight() - 1){
+
+                }
+                myPixelAdd[0] = (my1[0] + my2[0] + my3[0] + my4[0] + my5[0] + my6[0] + my7[0] + my8[0] + my9[0])/9;
+                myPixelAdd[1] = (my1[1] + my2[1] + my3[1] + my4[1] + my5[1] + my6[1] + my7[1] + my8[1] + my9[1])/9;
+                myPixelAdd[2] = (my1[2] + my2[2] + my3[2] + my4[2] + my5[2] + my6[2] + my7[2] + my8[2] + my9[2])/9;
+                mySecond.setPixel(i, j, myPixelAdd);
             }
         }
+        setPixels(mySecond);
     }
 
     @Override
