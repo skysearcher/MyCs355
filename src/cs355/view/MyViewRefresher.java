@@ -8,6 +8,7 @@ import cs355.model.drawable.DrawableShape;
 import cs355.model.drawable.ShapeConverter;
 import cs355.model.drawing.Line;
 import cs355.model.drawing.Shape;
+import cs355.model.image.CS355Image;
 import cs355.model.scene.CS355Scene;
 import cs355.model.scene.Instance;
 import cs355.model.scene.Line3D;
@@ -40,6 +41,8 @@ public class MyViewRefresher implements ViewRefresher {
     private MatrixMathMod conMatrix;
     private MatrixMathMod objToWorld;
     private double zoomFactor;
+    private boolean hasImage;
+    private CS355Image myImage;
 
 
     public MyViewRefresher(MyModel givenModel) {
@@ -53,6 +56,24 @@ public class MyViewRefresher implements ViewRefresher {
         myMatrix = new MatrixMathMod();
         conMatrix = new MatrixMathMod();
         objToWorld = new MatrixMathMod();
+        hasImage = false;
+        myImage = null;
+    }
+
+    public CS355Image getMyImage() {
+        return myImage;
+    }
+
+    public void setMyImage(CS355Image myImage) {
+        this.myImage = myImage;
+    }
+
+    public boolean isHasImage() {
+        return hasImage;
+    }
+
+    public void setHasImage(boolean hasImage) {
+        this.hasImage = hasImage;
     }
 
     public CS355Scene getMyScene() {
@@ -181,6 +202,9 @@ public class MyViewRefresher implements ViewRefresher {
             }
         }
 
+        if(hasImage){
+            g2d.drawImage(myImage.getImage(), 1024 - myImage.getWidth()/2, 1024 - myImage.getHeight()/2, null);
+        }
     }
 
     @Override

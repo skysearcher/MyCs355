@@ -7,6 +7,8 @@ import cs355.model.drawable.SquareCircle;
 import cs355.model.drawing.*;
 import cs355.model.drawing.Rectangle;
 import cs355.model.drawing.Shape;
+import cs355.model.image.CS355Image;
+import cs355.model.image.MyImage;
 import cs355.model.scene.CS355Scene;
 import cs355.view.MyViewRefresher;
 
@@ -51,9 +53,11 @@ public class MyController implements CS355Controller{
     private double moveFactor;
     private double rotateFactor;
     private boolean threeDing;
+    private CS355Image myImage;
 
 
     public MyController(MyModel givenModel, MyViewRefresher theView){
+        myImage = null;
         screenSize = 2048;
         myView = theView;
         myMod = givenModel;
@@ -414,12 +418,15 @@ public class MyController implements CS355Controller{
 
     @Override
     public void openImage(File file) {
-
+        myImage = new MyImage();
+        myImage.open(file);
+        myView.setMyImage(myImage);
+        myView.setHasImage(true);
+        GUIFunctions.refresh();
     }
 
     @Override
     public void saveImage(File file) {
-
     }
 
     @Override
@@ -451,37 +458,44 @@ public class MyController implements CS355Controller{
 
     @Override
     public void doEdgeDetection() {
-
+        myImage.edgeDetection();
+        GUIFunctions.refresh();
     }
 
     @Override
     public void doSharpen() {
-
+        myImage.sharpen();
+        GUIFunctions.refresh();
     }
 
     @Override
     public void doMedianBlur() {
-
+        myImage.medianBlur();
+        GUIFunctions.refresh();
     }
 
     @Override
     public void doUniformBlur() {
-
+        myImage.uniformBlur();
+        GUIFunctions.refresh();
     }
 
     @Override
     public void doGrayscale() {
-
+        myImage.grayscale();
+        GUIFunctions.refresh();
     }
 
     @Override
     public void doChangeContrast(int contrastAmountNum) {
-
+        myImage.contrast(contrastAmountNum);
+        GUIFunctions.refresh();
     }
 
     @Override
     public void doChangeBrightness(int brightnessAmountNum) {
-
+        myImage.brightness(brightnessAmountNum);
+        GUIFunctions.refresh();
     }
 
     @Override
