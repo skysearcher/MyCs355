@@ -36,11 +36,25 @@ public class MyImage extends CS355Image{
         int[] my2 = new int[3];
         int[] my3 = new int[3];
         int[] my4 = new int[3];
-        int[] my5 = new int[3];
         int[] my6 = new int[3];
         int[] my7 = new int[3];
         int[] my8 = new int[3];
         int[] my9 = new int[3];
+
+        float[] con1 = new float[3];
+        float[] con2 = new float[3];
+        float[] con3 = new float[3];
+        float[] con4 = new float[3];
+        float[] con6 = new float[3];
+        float[] con7 = new float[3];
+        float[] con8 = new float[3];
+        float[] con9 = new float[3];
+
+        float xVal = 0;
+        float yVal = 0;
+        int gradValue = 0;
+
+
         int[] myPixelAdd = new int[3];
         for(int i = 0; i < getWidth(); i++){
             for(int j = 0; j < getHeight(); j++){
@@ -55,16 +69,38 @@ public class MyImage extends CS355Image{
                     getPixel(i, j - 1, my2);
                     getPixel(i + 1, j - 1, my3);
                     getPixel(i - 1, j, my4);
-                    getPixel(i, j, my5);
                     getPixel(i + 1, j, my6);
                     getPixel(i - 1, j + 1, my7);
                     getPixel(i, j + 1, my8);
                     getPixel(i + 1, j + 1, my9);
+
+
+
+                    Color.RGBtoHSB(my1[0], my1[1], my1[2], con1);
+                    Color.RGBtoHSB(my2[0], my2[1], my2[2], con2);
+                    Color.RGBtoHSB(my3[0], my3[1], my3[2], con3);
+                    Color.RGBtoHSB(my4[0], my4[1], my4[2], con4);
+                    Color.RGBtoHSB(my6[0], my6[1], my6[2], con6);
+                    Color.RGBtoHSB(my7[0], my7[1], my7[2], con7);
+                    Color.RGBtoHSB(my8[0], my8[1], my8[2], con8);
+                    Color.RGBtoHSB(my9[0], my9[1], my9[2], con9);
                 }
-                myPixelAdd[0] = (my1[0] + my2[0] + my3[0] + my4[0] + my5[0] + my6[0] + my7[0] + my8[0] + my9[0])/9;
-                myPixelAdd[1] = (my1[1] + my2[1] + my3[1] + my4[1] + my5[1] + my6[1] + my7[1] + my8[1] + my9[1])/9;
-                myPixelAdd[2] = (my1[2] + my2[2] + my3[2] + my4[2] + my5[2] + my6[2] + my7[2] + my8[2] + my9[2])/9;
+
+                xVal = (((-con1[2]) + con3[2] + (-2 * con4[2]) + (2 * con6[2]) + (-con7[2]) + con9[2])/8);
+                yVal = (((-con1[2]) + (-2 * con2[2]) + (-con3[2]) + con7[2] + (2 * con8[2]) + con9[2])/8);
+                gradValue = (int)(Math.sqrt((xVal*xVal) + (yVal*yVal)) * 255);
+
+                if(gradValue < 0){
+                    gradValue = 0;
+                }
+                if(gradValue > 255){
+                    gradValue = 255;
+                }
+                myPixelAdd[0] = gradValue;
+                myPixelAdd[1] = gradValue;
+                myPixelAdd[2] = gradValue;
                 mySecond.setPixel(i, j, myPixelAdd);
+
             }
         }
         setPixels(mySecond);
