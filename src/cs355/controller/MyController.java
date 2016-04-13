@@ -427,6 +427,7 @@ public class MyController implements CS355Controller{
 
     @Override
     public void saveImage(File file) {
+        myImage.save(file);
     }
 
     @Override

@@ -14,6 +14,7 @@ import java.util.List;
 public class MyImage extends CS355Image{
 
     public MyImage(){
+
     }
 
     @Override
@@ -31,7 +32,7 @@ public class MyImage extends CS355Image{
     @Override
     public void edgeDetection() {
         CS355Image mySecond = new MyImage();
-        mySecond.setPixels(this);
+        mySecond.setPixels(getImage());
         int[] my1 = new int[3];
         int[] my2 = new int[3];
         int[] my3 = new int[3];
@@ -59,7 +60,7 @@ public class MyImage extends CS355Image{
         for(int i = 0; i < getWidth(); i++){
             for(int j = 0; j < getHeight(); j++){
                 getPixel(i, j, my1);
-                mySecond.setPixel(i, j , my1);
+                mySecond.setPixel(i, j, my1);
             }
         }
         for(int i = 0; i < getWidth(); i++){
@@ -74,8 +75,6 @@ public class MyImage extends CS355Image{
                     getPixel(i, j + 1, my8);
                     getPixel(i + 1, j + 1, my9);
 
-
-
                     Color.RGBtoHSB(my1[0], my1[1], my1[2], con1);
                     Color.RGBtoHSB(my2[0], my2[1], my2[2], con2);
                     Color.RGBtoHSB(my3[0], my3[1], my3[2], con3);
@@ -86,10 +85,10 @@ public class MyImage extends CS355Image{
                     Color.RGBtoHSB(my9[0], my9[1], my9[2], con9);
                 }
 
-                xVal = (((-con1[2]) + con3[2] + (-2 * con4[2]) + (2 * con6[2]) + (-con7[2]) + con9[2])/8);
-                yVal = (((-con1[2]) + (-2 * con2[2]) + (-con3[2]) + con7[2] + (2 * con8[2]) + con9[2])/8);
+                xVal = (((-1 * con1[2]) + con3[2] + (-2 * con4[2]) + (2 * con6[2]) + (-1 * con7[2]) + con9[2])/8);
+                yVal = (((-1 * con1[2]) + (-2 * con2[2]) + (-1 * con3[2]) + con7[2] + (2 * con8[2]) + con9[2])/8);
                 gradValue = (int)(Math.sqrt((xVal*xVal) + (yVal*yVal)) * 255);
-
+                gradValue += 64;
                 if(gradValue < 0){
                     gradValue = 0;
                 }
@@ -99,6 +98,7 @@ public class MyImage extends CS355Image{
                 myPixelAdd[0] = gradValue;
                 myPixelAdd[1] = gradValue;
                 myPixelAdd[2] = gradValue;
+
                 mySecond.setPixel(i, j, myPixelAdd);
 
             }
@@ -109,7 +109,7 @@ public class MyImage extends CS355Image{
     @Override
     public void sharpen() {
         CS355Image mySecond = new MyImage();
-        mySecond.setPixels(this);
+        mySecond.setPixels(getImage());
         int[] my1 = new int[3];
         int[] my2 = new int[3];
         int[] my4 = new int[3];
@@ -166,7 +166,7 @@ public class MyImage extends CS355Image{
     @Override
     public void medianBlur() {
         CS355Image mySecond = new MyImage();
-        mySecond.setPixels(this);
+        mySecond.setPixels(getImage());
         int[] transfer = new int[3];
         int[] myChart = new int[9];
         int[][] myChartPixel = new int[9][3];
@@ -254,7 +254,7 @@ public class MyImage extends CS355Image{
     @Override
     public void uniformBlur() {
         CS355Image mySecond = new MyImage();
-        mySecond.setPixels(this);
+        mySecond.setPixels(getImage());
         int[] my1 = new int[3];
         int[] my2 = new int[3];
         int[] my3 = new int[3];
